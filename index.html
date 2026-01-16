@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trail Symbol Scanner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f9fc;
+        }
+        .scan-button {
+            background-color: #2E7D32;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
+            transition: background 0.3s;
+        }
+        .scan-button:active {
+            background-color: #1B5E20;
+            transform: translateY(2px);
+        }
+        .status-box {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            min-height: 60px;
+        }
+        .symbol-card {
+            background: white;
+            border-left: 4px solid #2E7D32;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .symbol-card.found {
+            border-left: 4px solid #FF9800;
+        }
+        h1 {
+            color: #2E7D32;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Trail Symbol Scanner</h1>
+    
+    <button id="scanBtn" class="scan-button">
+        START SYMBOL SCAN
+    </button>
+    
+    <div id="status" class="status-box">
+        Ready to scan. Press the button to start.
+    </div>
+    
+    <div id="symbols-container"></div>
+    
+    <script>
+        // Symbol database
+        const symbols = [
+            { id: 'ta001', name: 'Kauri Tree', lat: -35.2760, lng: 173.5511, description: 'Ancient native tree of New Zealand' },
+            { id: 'ta002', name: 'Mountain Peak', lat: -39.2920, lng: 176.3782, description: 'Highest point on the trail' }
+        ];
+
+        let foundSymbols = [];
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSymbolList();
+            document.getElementById('scanBtn').addEventListener('click', startScan);
+        });
+
+        function startScan() {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = 'Scanning location...';
+            
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    statusEl.textContent = `Location acquired!`;
+                    checkPosition(position.coords);
+                },
+                error => {
+                    statusEl.textContent = `GPS Error: ${error.message}`;
+                    console.error('GPS Error:', error);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+
+        function checkPosition(coords) {
+            const statusEl = document.getElementById('status');
+            let foundCount = 0;
+            
+            symbols.forEach(symbol => {
+                if (foundSymbols.includes(symbol.id)) return;
+                
+                const distance = calculateDistance(
+                    coords.latitude, 
+                    coords.longitude, 
+                    symbol.lat, 
+                    symbol.lng
+                );
+                
+                if (distance <= 50) {
+                    foundSymbols.push(symbol.id);
+                    updateSymbolUI(symbol.id);
+                    saveToStorage(symbol);
+                    foundCount++;
+                }
+            });
+            
+            if (foundCount > 0) {
+                statusEl.textContent = `Found ${foundCount} new symbols!`;
+            } else {
+                statusEl.textContent = 'No new symbols found nearby.';
+            }
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371e3; // Earth radius in meters
+            const φ1 = lat1 * Math.PI/180;
+            const φ2 = lat2 * Math.PI/180;
+            const Δφ = (lat2 - lat1) * Math.PI/180;
+            const Δλ = (lon2 - lon1) * Math.PI/180;
+            
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ/2) * Math.sin(Δλ/2);
+                      
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        }
+
+        function updateSymbolUI(symbolId) {
+            const cards = document.querySelectorAll('.symbol-card');
+            cards.forEach(card => {
+                if (card.dataset.id === symbolId) {
+                    card.classList.add('found');
+                    card.innerHTML = `
+                        <h3>${symbols.find(s => s.id === symbolId).name}</h3>
+                        <p>${symbols.find(s => s.id === symbolId).description}</p>
+                        <small>Discovered at ${new Date().toLocaleTimeString()}</small>
+                    `;
+                }
+            });
+        }
+
+        function saveToStorage(symbol) {
+            localStorage.setItem(symbol.id, JSON.stringify({
+                ...symbol,
+                foundAt: new Date().toISOString()
+            }));
+        }
+
+        function renderSymbolList() {
+            const container = document.getElementById('symbols-container');
+            symbols.forEach(symbol => {
+                const card = document.createElement('div');
+                card.className = 'symbol-card';
+                card.dataset.id = symbol.id;
+                card.innerHTML = `
+                    <h3>${symbol.name}</h3>
+                    <p>Status: Not discovered</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
