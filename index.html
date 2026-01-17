@@ -48,6 +48,9 @@
         .symbol-card.found {
             border-left: 4px solid #FF9800;
         }
+        .hidden {
+            display: none;
+        }
         h1 {
             color: #2E7D32;
             text-align: center;
@@ -67,7 +70,7 @@
     <button id="collectBtn" class="scan-button">
         Collection
     </button>
-    <div id="symbols-container" style="display: hidden"></div>
+    <div id="symbols-container" class="hidden"></div>
     
     <script>
         // Symbol database
@@ -88,7 +91,7 @@ document.getElementById('collectBtn').addEventListener('click', showCollection);
 
         function showCollection() {
             const symbolCol = document.getElementById('symbols-container');
-            symbolCol.style = 'display: yes';
+            symbolCol.classList.toggle('hidden');
 }
         function startScan() {
             const statusEl = document.getElementById('status');
