@@ -42,8 +42,8 @@
     <script>
         // Symbol database
         const symbols = [
-            { id: 'ta001', name: 'Kauri Tree', lat: -35.2760, lng: 173.5511, description: 'Ancient native tree of New Zealand' },
-            { id: 'ta002', name: 'Mountain Peak', lat: -39.2920, lng: 176.3782, description: 'Highest point on the trail' }
+            { id: 'ta001', name: 'Kauri Tree', lat: -35.2760, lng: 173.5511, description: 'Ancient native tree of New Zealand', found: True},
+            { id: 'ta002', name: 'Mountain Peak', lat: -39.2920, lng: 176.3782, description: 'Highest point on the trail', found: False}
         ];
 
         let foundSymbols = [];
@@ -172,7 +172,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     <h3>${symbol.name}</h3>
                     <p>Status: Not discovered</p>
                 `;
-                container.appendChild(card);
+                if (symbol.found){ container.appendChild(card);
+}
             });
         }
     </script>
