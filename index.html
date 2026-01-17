@@ -55,22 +55,83 @@
             color: #2E7D32;
             text-align: center;
         }
+.tab-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #ccc;
+}
+
+.tab {
+  padding: 10px 20px;
+  background: #f1f1f1;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.tab:hover {
+  background: #ddd;
+}
+
+.tab.active {
+  background: #007bff;
+  color: white;
+}
+
+.tab-content {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
     </style>
 </head>
 <body>
     <h1>Trail Symbol Scanner</h1>
     
-    <button id="scanBtn" class="scan-button">
+<div class="tab-container">
+  <div class="tabs">
+    <button class="tab active" data-tab="tab1">GPS Scan</button>
+    <button class="tab" data-tab="tab2">Manual</button>
+    <button class="tab" data-tab="tab3">Collection</button>
+  </div>
+  <div class="tab-content">
+    <div id="tab1" class="tab-pane active">
+   <button id="scanBtn" class="scan-button">
         START SYMBOL SCAN
     </button>
     
     <div id="status" class="status-box">
         Ready to scan. Press the button to start.
     </div>
-    <button id="collectBtn" class="scan-button">
-        Collection
-    </button>
-    <div id="symbols-container" class="hidden"></div>
+
+</div>
+
+    <div id="tab2" class="tab-pane">Content for Tab 2</div>
+
+    <div id="tab3" class="tab-pane">
+    <div id="symbols-container"></div>
+</div>
+  </div>
+</div>
+
+
+ 
+  
+
     
     <script>
         // Symbol database
@@ -89,10 +150,27 @@
 document.getElementById('collectBtn').addEventListener('click', showCollection);
         });
 
-        function showCollection() {
-            const symbolCol = document.getElementById('symbols-container');
-            symbolCol.classList.toggle('hidden');
-}
+document.addEventListener('DOMContentLoaded', function () {
+  const tabs = document.querySelectorAll('.tab');
+  const tabPanes = document.querySelectorAll('.tab-pane');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Remove active class from all tabs and panes
+      tabs.forEach(t => t.classList.remove('active'));
+      tabPanes.forEach(p => p.classList.remove('active'));
+
+      // Add active class to clicked tab
+      tab.classList.add('active');
+
+      // Show corresponding pane
+      const tabId = tab.getAttribute('data-tab');
+      document.getElementById(tabId).classList.add('active');
+    });
+  });
+});
+
+
         function startScan() {
             const statusEl = document.getElementById('status');
             statusEl.textContent = 'Scanning location...';
