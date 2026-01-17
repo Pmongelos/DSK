@@ -64,8 +64,10 @@
     <div id="status" class="status-box">
         Ready to scan. Press the button to start.
     </div>
-    
-    <div id="symbols-container"></div>
+    <button id="collectBtn" class="scan-button l">
+        Collection
+    </button>
+    <div id="symbols-container" style="hidden"></div>
     
     <script>
         // Symbol database
@@ -80,8 +82,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderSymbolList();
             document.getElementById('scanBtn').addEventListener('click', startScan);
+
+document.getElementById('collectBtn').addEventListener('click', showCollection);
         });
 
+        function showCollection() {
+            const symbolCol = document.getElementById('symbols-container');
+            symbolCol.style = 'display';
+}
         function startScan() {
             const statusEl = document.getElementById('status');
             statusEl.textContent = 'Scanning location...';
