@@ -146,7 +146,7 @@ function updateSymbolUI(symbolId) {
                 <h3>${symbols.find(s => s.id === symbolId).name}</h3>
                 <p>${symbols.find(s => s.id === symbolId).description}</p>
                 <small>Discovered at ${new Date().toLocaleTimeString()}</small>
-                <div class="img-container"><img src=${symbols.find(s => s.id === symbolId).img}></div>
+                <div class="img-container"><img src=./img/${symbols.find(s => s.id === symbolId).img}></div>
             `;
         }
     });
@@ -161,7 +161,7 @@ function renderSymbolList() {
                 card.innerHTML = `
                     <h3>${symbol.name}</h3>
                     <p>Status: Not discovered</p>
-                    <div class="img-container"><img src=${symbol.img}></div>
+                    <div class="img-container"><img src=./img/${symbol.img}></div>
                 `;
                 container.appendChild(card);
             });
