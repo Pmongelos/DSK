@@ -136,7 +136,7 @@ function updateSymbolUI(symbolId) {
     const cards = document.querySelectorAll('.symbol-card');
     cards.forEach(card => {
         if (card.dataset.id === symbolId) {
-            card.classList.toggle('symbol-card hidden', 'symbol-card found');
+            card.classList.replace('hidden', 'found');
             card.innerHTML = `
                 <h3>${symbols.find(s => s.id === symbolId).name}</h3>
                 <p>${symbols.find(s => s.id === symbolId).description}</p>
