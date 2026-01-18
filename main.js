@@ -1,7 +1,12 @@
 // Symbol database
         const symbols = [
             { id: 'ta001', name: 'Kauri Tree', img: "", lat: -35.2760, lng: 173.5511, description: 'Ancient native tree of New Zealand'},
-            { id: 'ta002', name: 'Mountain Peak', img: "", lat: -39.2920, lng: 176.3782, description: 'Highest point on the trail'}
+            { id: 'ta002', name: 'Mountain Peak', img: "", lat: -39.2920, lng: 176.3782, description: 'Highest point on the trail'},
+            { id: 'ta003', name: 'Urutengangana', img: "urutengangana.jpg", description: "Dios de la luz. El primogénito de los dioses.", lat: -41.1680009, lng: 174.0608852},
+            { id: 'ta004', name: 'Tumatauenga', img: "tumatauenga.jpg", description: "Dios de la guerra y la caza.", lat: -39.3524332, lng: 174.2214992},
+            { id: 'ta005', name: 'Rūaumoko', img: "ruaumoko.jpg", description: "Dios de los terremotos y volcanes.", lat: -42.1119642, lng: 172.6010590},
+            { id: 'ta006', name: 'Pekapeka', img: "pekapekamaori.jpg", description: "Murciélago nativo maorí.", lat: -37.0661338, lng: 174.8635439 },
+            { id: 'ta007', name: 'Rongo', img: "rongo.jpg", description: "Dios de la paz y la agricultura.", lat: -42.9150553, lng: 171.9547704}
         ];
 
         let foundSymbols = [];
@@ -141,6 +146,7 @@ function updateSymbolUI(symbolId) {
                 <h3>${symbols.find(s => s.id === symbolId).name}</h3>
                 <p>${symbols.find(s => s.id === symbolId).description}</p>
                 <small>Discovered at ${new Date().toLocaleTimeString()}</small>
+                <div class="img-container"><img src=${symbols.find(s => s.id === symbolId).img}></div>
             `;
         }
     });
