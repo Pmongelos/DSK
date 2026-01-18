@@ -116,6 +116,27 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
 //Funciones de UI
 
+//Switch selector management
+const modeSwitch = document.getElementById('modeSwitch');
+
+function updateScanMode() {
+    const gpsMode = document.getElementById('gps-mode');
+    const manualMode = document.getElementById('manual-mode');
+    if (modeSwitch.checked) {
+        // Manual mode active
+        gpsMode.style.display = 'none';
+        manualMode.style.display = '';
+    } else {
+        // GPS mode active
+        gpsMode.style.display = '';
+        manualMode.style.display = 'none';
+    }
+}
+
+modeSwitch.addEventListener('change', updateScanMode);
+// Initialize UI based on default switch state
+updateScanMode();
+
 //Tab selector management
 document.addEventListener('DOMContentLoaded', function () {
   const tabs = document.querySelectorAll('.tab');
