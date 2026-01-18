@@ -20,12 +20,16 @@
 
   <div class="tab-content">
     <div id="tab1" class="tab-pane active">
-      <label class="switch">
-      <input type="checkbox">
-      <span class="slider round"></span>
-      </label>
+      <div>
+        <span>GPS</span>
+        <label class="switch">
+        <input type="checkbox">
+        <span class="slider round"></span>
+        </label>
+        <span>Manual</span>
+      </div>
       <button id="scanBtn" class="scan-button">
-      START SYMBOL SCAN
+      SCAN
       </button>
 
       <!-- SVG de carga (Spinning loader) - Tags verificados y cerrados correctamente -->
@@ -40,15 +44,20 @@
     </div>
 
     <div id="tab2" class="tab-pane">
-        <form action="none" method="post">
-            <label for="latitude">Latitude:</label>
-            <input class="coords" type="text" name="lat" required>
+      <form action="none" method="post">
+        <label for="latitude">Latitude:</label>
+        <input class="coords" type="text" id="lat" required>
 
-            <label for="longitude">Longitude:</label>
-            <input class="coords" type="text" name="lon" required><br>
+        <label for="longitude">Longitude:</label>
+        <input class="coords" type="text" id="lon" required><br>
 
-            <input type="submit" value="Buscar">
-        </form>
+        <button id="scanBtnManual" class="scan-button">
+        SCAN
+        </button>
+        <div id="status" class="status-box">
+        Ready to scan. Press the button to start.
+        </div>  
+      </form>
     </div>
 
     <div id="tab3" class="tab-pane">

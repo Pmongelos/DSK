@@ -1,62 +1,62 @@
 body {
-            font-family: 'Segoe UI', sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f9fc;
-        }
-        .scan-button {
-            background-color: #0a76b4;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            border-radius: 50px;
-            cursor: pointer;
-            width: 100%;
-            margin: 20px 0;
-            box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
-            transition: background 0.3s;
-        }
-        .scan-button:active {
-            background-color: #1B5E20;
-            transform: translateY(2px);
-        }
-        .status-box {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
-            min-height: 60px;
-        }
-        .symbol-card {
-            background: white;
-            border-left: 4px solid #2E7D32;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            display: wrap;
-        }
-        .symbol-card.found {
-            border-left: 4px solid #FF9800;
-        }
-        .hidden {
-            display: none;
-        }
-        h1 {
-            color: #2E7D32;
-            text-align: center;
-            padding-bottom: none;
-        }  
-        h2 {
-            color: #2E7D99;
-            text-align: center;
-            font-size: medium;
-            padding-bottom: 20px;
-        }
+    font-family: 'Segoe UI', sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f9fc;
+}
+.scan-button {
+    background-color: #0a76b4;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 18px;
+    border-radius: 50px;
+    cursor: pointer;
+    width: 100%;
+    margin: 20px 0;
+    box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
+    transition: background 0.3s;
+}
+.scan-button:active {
+    background-color: #1B5E20;
+    transform: translateY(2px);
+}
+.status-box {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+    min-height: 60px;
+}
+.symbol-card {
+    background: white;
+    border-left: 4px solid #2E7D32;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: wrap;
+}
+.symbol-card.found {
+    border-left: 4px solid #FF9800;
+}
+.hidden {
+    display: none;
+}
+h1 {
+    color: #2E7D32;
+    text-align: center;
+    padding-bottom: none;
+}  
+h2 {
+    color: #2E7D99;
+    text-align: center;
+    font-size: medium;
+    padding-bottom: 20px;
+}
 .tab-container {
   width: 100%;
   margin: auto;

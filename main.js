@@ -10,6 +10,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     renderSymbolList();
     document.getElementById('scanBtn').addEventListener('click', startScan);
+    document.getElementById('scanBtnManual').addEventListener('click', manualScan);
 
 });
 
@@ -44,6 +45,26 @@ function startScan() {
         }
     );
 }
+
+function manualScan() {
+    const statusEl = document.getElementById('status');
+    statusEl.textContent = 'Starting manual scan...';
+
+    const latVal = document.getElementById('lat').value;
+    const lonVal = document.getElementById('lon').value;
+
+    const lat = parseFloat(latVal);
+    const lon = parseFloat(lonVal);
+
+    if (Number.isNaN(lat) || Number.isNaN(lon)) {
+        statusEl.textContent = 'Manual scan error: invalid coordinates.';
+        return;
+    }
+
+    statusEl.textContent = 'Using manual coordinates...';
+    checkPosition({ latitude: lat, longitude: lon });
+}
+
 
 function checkPosition(coords) {
     const statusEl = document.getElementById('status');
