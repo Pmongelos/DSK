@@ -115,7 +115,7 @@ function updateSymbolUI(symbolId) {
     const cards = document.querySelectorAll('.symbol-card');
     cards.forEach(card => {
         if (card.dataset.id === symbolId) {
-            card.classList.add('found');
+            card.classList.toggle('hidden', 'found');
             card.innerHTML = `
                 <h3>${symbols.find(s => s.id === symbolId).name}</h3>
                 <p>${symbols.find(s => s.id === symbolId).description}</p>
@@ -129,7 +129,7 @@ function renderSymbolList() {
             const container = document.getElementById('symbols-container');
             symbols.forEach(symbol => {
                 const card = document.createElement('div');
-                card.className = 'symbol-card';
+                card.className = 'symbol-card hidden';
                 card.dataset.id = symbol.id;
                 card.innerHTML = `
                     <h3>${symbol.name}</h3>
