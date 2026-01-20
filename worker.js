@@ -1,11 +1,9 @@
-const CACHE_NAME = 'pwa-v5';
+const CACHE_NAME = 'TMKG-v1';
 const ASSETS = [
     './',
     './index.html',
     './main.js',
-    './offline.html',
-    './img/tane.jpg',
-    './img/koru.jpg'
+    './offline.html'
 ];
 
 // Instalación: Guardar archivos estáticos
