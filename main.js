@@ -11,6 +11,26 @@ const symbols = [
 
 let foundSymbols = [];
 
+// 1. Registro del Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('worker.js')
+        .then(() => console.log("Service Worker registrado"));
+}
+
+// 2. Configuración de la Base de Datos (IndexedDB)
+let db;
+const request = indexedDB.open("TMKG_V1", 1);
+
+request.onupgradeneeded = (e) => {
+    db = e.target.result;
+    db.createObjectStore("foundSymbols", { keyPath: "id" });
+};
+
+request.onsuccess = (e) => {
+    db = e.target.result;
+    updateSymbolUI();
+};
+
 // Initialize app
 document.addEventListener('DOMContentLoaded', () => {
     renderSymbolList();
@@ -25,30 +45,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-//Guardar en localStorage
-function saveToStorage(symbol) {
-    localStorage.setItem(symbol.id, JSON.stringify({
-        ...symbol,
-        foundAt: new Date().toISOString()
-    }));
+
+// 3. Funciones de la Aplicación
+function saveSymbol(symbolId) {
+    const transaction = db.transaction(["foundSymbols"], "readwrite");
+    const store = transaction.objectStore("foundSymbols");
+    const newSymbol = { id: symbolId, date: new Date().toLocaleString() };
+
+    store.add(newSymbol);
+    transaction.oncomplete = () => {
+        updateSymbolUI();
+    };
 }
 
+function updateSymbolUI() {
 
-function updateSymbolUI(symbolId) {
+    const store = db.transaction("foundSymbols").objectStore("foundSymbols");
     const cards = document.querySelectorAll('.symbol-card');
-    cards.forEach(card => {
-        if (card.dataset.id === symbolId) {
-            card.classList.replace('hidden', 'found');
-            card.innerHTML = `
-                <div>
-                <h3>${symbols.find(s => s.id === symbolId).name}</h3>
-                <p>${symbols.find(s => s.id === symbolId).description}</p>
-                <small>Discovered at ${new Date().toLocaleTimeString()}</small>
-                </div>
-                <div class="img-container"><img src=./img/${symbols.find(s => s.id === symbolId).img} style="width: 100%"></div>
-            `;
+
+    store.openCursor().onsuccess = (e) => {
+        const cursor = e.target.result;
+        if (cursor) {
+            symbolId = cursor.value.id;
+            cards.forEach(card => {
+                if (card.dataset.id === symbolId) {
+                    card.classList.replace('hidden', 'found');
+                    card.innerHTML = `
+                        <div>
+                        <h3>${symbols.find(s => s.id === symbolId).name}</h3>
+                        <p>${symbols.find(s => s.id === symbolId).description}</p>
+                        <small>Discovered at ${cursor.value.date}</small>
+                        </div>
+                        <div class="img-container"><img src=./img/${symbols.find(s => s.id === symbolId).img} style="width: 100%"></div>
+                    `;
+                }
+            });
+
+            cursor.continue();
+            
         }
-    });
+    };
+
+    
 }
 
 function renderSymbolList() {
@@ -123,12 +161,22 @@ function checkPosition(coords) {
     const spinner = document.getElementById('gps-loader');
     const scanBtn = document.getElementById('scanBtn');
     const scanBtnManual = document.getElementById('scanBtnManual');
+    const store = db.transaction("foundSymbols").objectStore("foundSymbols");
     let foundCount = 0;
     
     try {
         symbols.forEach(symbol => {
-            if (foundSymbols.includes(symbol.id)) return;
-            
+            // Comprobar si el símbolo ya ha sido encontrado
+            let symbolId = null;
+            store.openCursor().onsuccess = (e) => {
+                const cursor = e.target.result;
+                if (cursor) {
+                    symbolId = cursor.value.id;
+                    if (symbolId === symbol.id) return;
+                }
+                cursor.continue();
+            };
+
             const distance = calculateDistance(
                 coords.latitude, 
                 coords.longitude, 
@@ -137,9 +185,8 @@ function checkPosition(coords) {
             );
             
             if (distance <= 50) {
-                foundSymbols.push(symbol.id);
-                updateSymbolUI(symbol.id);
-                saveToStorage(symbol);
+                saveSymbol(symbol.id);
+                updateSymbolUI();
                 foundCount++;
             }
         });
