@@ -11,33 +11,6 @@ const symbols = [
 
 let foundSymbols = [];
 
-// Spinner timing control (milliseconds)
-const MIN_SPINNER_MS = 800; // mínimo tiempo que se mostrará el spinner
-let spinnerStart = 0;
-
-function showSpinner() {
-    const spinner = document.getElementById('gps-loader');
-    const modes = document.getElementById('mode-inputs');
-    const status = document.getElementById('status');
-    if (status) status.style.display = 'none';
-    if (spinner) spinner.style.display = 'inline-block';
-    if (modes) modes.style.display = 'none';
-    spinnerStart = Date.now();
-}
-
-function hideSpinner() {
-    const spinner = document.getElementById('gps-loader');
-    const modes = document.getElementById('mode-inputs');
-    const elapsed = Date.now() - spinnerStart;
-    const remaining = Math.max(0, MIN_SPINNER_MS - elapsed);
-    const status = document.getElementById('status');
-    setTimeout(() => {
-        if (spinner) spinner.style.display = 'none';
-        if (modes) modes.style.display = '';
-        if (status) status.style.display = '';
-    }, remaining);
-}
-
 // Initialize app
 document.addEventListener('DOMContentLoaded', () => {
     renderSymbolList();
@@ -59,6 +32,41 @@ function saveToStorage(symbol) {
         foundAt: new Date().toISOString()
     }));
 }
+
+
+function updateSymbolUI(symbolId) {
+    const cards = document.querySelectorAll('.symbol-card');
+    cards.forEach(card => {
+        if (card.dataset.id === symbolId) {
+            card.classList.replace('hidden', 'found');
+            card.innerHTML = `
+                <div>
+                <h3>${symbols.find(s => s.id === symbolId).name}</h3>
+                <p>${symbols.find(s => s.id === symbolId).description}</p>
+                <small>Discovered at ${new Date().toLocaleTimeString()}</small>
+                </div>
+                <div class="img-container"><img src=./img/${symbols.find(s => s.id === symbolId).img} style="width: 100%"></div>
+            `;
+        }
+    });
+}
+
+function renderSymbolList() {
+            const container = document.getElementById('symbols-container');
+            symbols.forEach(symbol => {
+                const card = document.createElement('div');
+                card.className = 'symbol-card hidden';
+                card.dataset.id = symbol.id;
+                card.innerHTML = `
+                    <h3>${symbol.name}</h3>
+                    <p>Status: Not discovered</p>
+                    <div class="img-container"><img src=./img/${symbol.img} ></div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+
 
 //Funciones de escaneo y posición
 function startScan() {
@@ -202,35 +210,29 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-function updateSymbolUI(symbolId) {
-    const cards = document.querySelectorAll('.symbol-card');
-    cards.forEach(card => {
-        if (card.dataset.id === symbolId) {
-            card.classList.replace('hidden', 'found');
-            card.innerHTML = `
-                <div>
-                <h3>${symbols.find(s => s.id === symbolId).name}</h3>
-                <p>${symbols.find(s => s.id === symbolId).description}</p>
-                <small>Discovered at ${new Date().toLocaleTimeString()}</small>
-                </div>
-                <div class="img-container"><img src=./img/${symbols.find(s => s.id === symbolId).img} style="width: 100%"></div>
-            `;
-        }
-    });
+// Spinner timing control (milliseconds)
+const MIN_SPINNER_MS = 800; // mínimo tiempo que se mostrará el spinner
+let spinnerStart = 0;
+
+function showSpinner() {
+    const spinner = document.getElementById('gps-loader');
+    const modes = document.getElementById('mode-inputs');
+    const status = document.getElementById('status');
+    if (status) status.style.display = 'none';
+    if (spinner) spinner.style.display = 'inline-block';
+    if (modes) modes.style.display = 'none';
+    spinnerStart = Date.now();
 }
 
-function renderSymbolList() {
-            const container = document.getElementById('symbols-container');
-            symbols.forEach(symbol => {
-                const card = document.createElement('div');
-                card.className = 'symbol-card hidden';
-                card.dataset.id = symbol.id;
-                card.innerHTML = `
-                    <h3>${symbol.name}</h3>
-                    <p>Status: Not discovered</p>
-                    <div class="img-container"><img src=./img/${symbol.img} ></div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
+function hideSpinner() {
+    const spinner = document.getElementById('gps-loader');
+    const modes = document.getElementById('mode-inputs');
+    const elapsed = Date.now() - spinnerStart;
+    const remaining = Math.max(0, MIN_SPINNER_MS - elapsed);
+    const status = document.getElementById('status');
+    setTimeout(() => {
+        if (spinner) spinner.style.display = 'none';
+        if (modes) modes.style.display = '';
+        if (status) status.style.display = '';
+    }, remaining);
+}
