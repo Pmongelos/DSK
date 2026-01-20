@@ -38,7 +38,7 @@ body {
     margin: 10px 0;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    display: wrap;
+    display: inline-flex;
 }
 .symbol-card.found {
     border-left: 4px solid #FF9800;
@@ -93,6 +93,9 @@ h2 {
   border-top: none;
 }
 
+/* make tab-content a positioning context so the spinner can be centered inside it */
+.tab-content { position: relative; }
+
 .tab-pane {
   display: none;
 }
@@ -115,9 +118,27 @@ label {
     width: 100px;
     height: 100px;
     background: #f0f0f0;
+    margin: 10px;
 }
 
+.gps-loader {
+  /* center inside .tab-content */
+  transform: translate(-50%, -50%);
+  display: none; /* hidden by default; JS will toggle inline-block when needed */
+  margin-top: 150px;
+  margin-left: 50%;
+}
+.gps-loader .ring { fill: none; stroke: #f6c34a; stroke-width: 4; opacity: 0.25; }
+.gps-loader .spin { fill: none; stroke: #f6c34a; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 80; stroke-dashoffset: 60; transform-origin: 25px 25px; animation: rotate 1s linear infinite, dash 1.2s ease-in-out infinite; }
+@keyframes rotate { 100% { transform: rotate(360deg); } }
+@keyframes dash { 0% { stroke-dashoffset: 80; } 50% { stroke-dashoffset: 30; } 100% { stroke-dashoffset: 80; } }
 /* slider styles */
+
+.switch-container {
+  /* center inside .tab-content */
+  transform: translate(-35%);
+  margin-left: 50%;
+}
 
 .switch {
   position: relative;
