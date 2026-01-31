@@ -219,8 +219,8 @@ function checkPosition(coords) {
         });
 
         if (foundCount > 0) {
-            statusEl.textContent = `Kia Ora! You found ${foundCount} new symbol(s)!`;
-            statusEl.style.backgroundColor = "#e8f5e9"; // Light green success bg
+            statusEl.textContent = `🎉🎉Kia Ora! You found ${foundCount} new symbol(s)!🎊🎊`;
+            statusEl.style.backgroundColor = "#98fca0ff"; // Light green success bg
         } else {
             statusEl.textContent = 'No new symbols nearby. Keep exploring!';
             statusEl.style.backgroundColor = "white";
