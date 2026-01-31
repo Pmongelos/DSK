@@ -195,6 +195,23 @@ function checkPosition(coords) {
             );
             
             // 3. Catch logic (Threshold: 50 meters)
+            // Inside the symbols.forEach loop in checkPosition...
+            if (distance > 50) {
+                // Update the hint on the card even if not caught
+                const card = document.querySelector(`.symbol-card[data-id="${symbol.id}"]`);
+                if (card && card.classList.contains('hidden')) {
+                    const hintEl = card.querySelector('.distance-hint');
+                    if (hintEl) {
+                        let hintText = "";
+                        if (distance < 200) hintText = "🔥 Very Hot! (< 200m)";
+                        else if (distance < 500) hintText = "☀️ Hot (< 500m)";
+                        else if (distance < 1000) hintText = "☁️ Warm (< 1km)";
+                        else hintText = "❄️ Cold (> 1km)";
+                        
+                        hintEl.textContent = `Signal strength: ${hintText}`;
+                    }
+                }
+            }
             if (distance <= 50) {
                 saveSymbol(symbol.id);
                 foundCount++;
