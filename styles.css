@@ -1,210 +1,300 @@
+:root {
+    /* Color Palette */
+    --primary: rgb(79, 70, 229);      /* Indigo-600 */
+    --primary-hover: rgb(67, 56, 202);
+    --bg-main: #111827;               /* Gray-900 (Deep Dark) */
+    --bg-card: #1f2937;               /* Gray-800 (Card Background) */
+    --border: rgb(55, 65, 81);        /* Gray-700 */
+    --text-main: #f3f4f6;             /* Gray-100 */
+    --text-muted: #9ca3af;            /* Gray-400 */
+    --accent-success: #10b981;        /* Emerald */
+    --accent-warning: #f59e0b;        /* Amber */
+    
+    /* Spacing & Radius */
+    --radius-lg: 24px;
+    --radius-md: 16px;
+    --radius-sm: 12px;
+    --nav-height: 80px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-    font-family: 'Segoe UI', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    margin: 0;
+    padding: 20px 20px 100px 20px; /* Extra bottom padding for fixed nav */
+    min-height: 100vh;
+    -webkit-tap-highlight-color: transparent; /* Remove mobile tap highlight */
+}
+
+/* --- Typography --- */
+h1 {
+    color: var(--primary);
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+}  
+
+h2 {
+    color: var(--text-muted);
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 400;
+    margin-top: 0;
+    padding-bottom: 20px;
+}
+
+/* --- Layout Containers --- */
+.tab-container {
+    width: 100%;
     max-width: 600px;
     margin: 0 auto;
-    padding: 20px;
-    background-color: #f5f9fc;
 }
+
+.tab-content {
+    /* No border needed in this modern style */
+    position: relative;
+    padding: 10px 0;
+}
+
+.tab-pane {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Bottom Navigation (Thumb Friendly) --- */
+.tabs {
+    display: flex;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: rgba(31, 41, 55, 0.95); /* Semi-transparent bg-card */
+    backdrop-filter: blur(10px);        /* Frosted glass effect */
+    border: 1px solid var(--border);
+    border-radius: 50px;                /* Pill shape */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    z-index: 1000;
+    padding: 5px;
+    max-width: 500px;
+    margin: 0 auto; /* Center on larger screens */
+}
+
+.tab {
+    flex: 1;
+    padding: 15px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 40px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab.active {
+    background-color: var(--primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+}
+
+/* --- Primary Actions (Buttons) --- */
 .scan-button {
-    background-color: #0a76b4;
+    background-color: var(--primary);
     color: white;
     border: none;
-    padding: 15px 30px;
-    font-size: 18px;
-    border-radius: 50px;
+    padding: 20px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border-radius: var(--radius-lg);
     cursor: pointer;
     width: 100%;
-    margin: 20px 0;
-    box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
-    transition: background 0.3s;
+    margin-top: 20px;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+    transition: transform 0.2s, background-color 0.2s;
+    text-transform: uppercase;
 }
+
 .scan-button:active {
-    background-color: #1B5E20;
-    transform: translateY(2px);
+    transform: scale(0.97);
+    background-color: var(--primary-hover);
 }
+
+/* --- Status Box (HUD Style) --- */
 .status-box {
-    background: white;
-    border-radius: 10px;
-    padding: 15px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    border-radius: var(--radius-md);
+    padding: 20px;
     margin: 15px 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     text-align: center;
-    min-height: 60px;
+    line-height: 1.5;
 }
+
+/* --- Cards (Collection) --- */
 .symbol-card {
-    background: white;
-    border-left: 4px solid #2E7D32;
+    display: flex;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
     padding: 15px;
-    margin: 10px 0;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    display: inline-flex;
+    margin-bottom: 15px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.2s;
 }
+
+.symbol-card:active {
+    transform: scale(0.98);
+}
+
+.symbol-card h3 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: var(--primary);
+}
+
+.symbol-card p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin: 5px 0;
+}
+
+/* Image Container in Card */
+.img-container {
+    width: 90px;
+    height: 90px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    flex-shrink: 0;
+    margin-left: 15px;
+    border: 1px solid var(--border);
+    background-color: #000;
+}
+
+/* Found vs Locked States */
 .symbol-card.found {
-    border-left: 4px solid #FF9800;
+    border-color: var(--accent-success);
+    background: linear-gradient(145deg, var(--bg-card) 0%, rgba(16, 185, 129, 0.05) 100%);
 }
 
 .symbol-card.locked {
-    background-color: #e0e0e0; /* Grey background for locked items */
-    border-left: 4px solid #999;
-    opacity: 0.8;
+    opacity: 0.7;
+    background: #18181b; /* Darker than card */
 }
 
 .distance-hint {
     font-weight: bold;
-    color: #d32f2f; /* Red text for the hint */
-    margin-top: 5px;
-}
-h1 {
-    color: #2E7D32;
-    text-align: center;
-    padding-bottom: none;
-}  
-h2 {
-    color: #2E7D99;
-    text-align: center;
-    font-size: medium;
-    padding-bottom: 20px;
-}
-.tab-container {
-  width: 100%;
-  margin: auto;
+    color: var(--accent-warning) !important;
 }
 
-.tabs {
-  display: flex;
-  border-bottom: 1px solid #ccc;
-  background: #f1f1f1;
+/* --- Forms & Inputs --- */
+#manual-mode {
+    background: var(--bg-card);
+    padding: 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    margin-top: 20px;
 }
 
-.tab {
-  padding: 10px 20px;
-  background: #f1f1f1;
-  border: none;
-  cursor: pointer;
-  transition: sbackground 0.3s;
-  width: 100%;
-  border-radius: 20px 20px 0px 0px;
-}
-
-.tab:hover {
-  background: #ddd;
-}
-
-.tab.active {
-  background: #007bff;
-  color: white;
-}
-
-.tab-content {
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-top: none;
-}
-
-/* make tab-content a positioning context so the spinner can be centered inside it */
-.tab-content { position: relative; }
-
-.tab-pane {
-  display: none;
-}
-
-.tab-pane.active {
-  display: block;
-}
-
-form {
-    display: grid;
+input[type="text"] {
     width: 100%;
+    background: var(--bg-main);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+    font-size: 1rem;
 }
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
 label {
-    padding: 10px;
-}
-.coords {
-    width: 50%;
-}
-.img-container{
-    width: 100px;
-    height: 100px;
-    background: #f0f0f0;
-    margin: 10px;
+    display: block;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+    font-size: 0.9rem;
 }
 
-.gps-loader {
-  /* center inside .tab-content */
-  transform: translate(-50%, -50%);
-  display: none; /* hidden by default; JS will toggle inline-block when needed */
-  margin-top: 150px;
-  margin-left: 50%;
-}
-.gps-loader .ring { fill: none; stroke: #f6c34a; stroke-width: 4; opacity: 0.25; }
-.gps-loader .spin { fill: none; stroke: #f6c34a; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 80; stroke-dashoffset: 60; transform-origin: 25px 25px; animation: rotate 1s linear infinite, dash 1.2s ease-in-out infinite; }
-@keyframes rotate { 100% { transform: rotate(360deg); } }
-@keyframes dash { 0% { stroke-dashoffset: 80; } 50% { stroke-dashoffset: 30; } 100% { stroke-dashoffset: 80; } }
-/* slider styles */
-
+/* --- Switch / Toggle --- */
 .switch-container {
-  /* center inside .tab-content */
-  transform: translate(-35%);
-  margin-left: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    font-weight: 600;
+    color: var(--text-main);
 }
 
 .switch {
-  position: relative;
-  display: inline-block;
-  width: 100px;
-  height: 15px;
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
 }
 
-.switch input { 
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
+.switch input { opacity: 0; width: 0; height: 0; }
 
 .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    transition: .4s;
 }
 
 .slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--text-muted);
+    transition: .4s;
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+    background-color: var(--primary);
+    border-color: var(--primary);
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(85px);
-  -ms-transform: translateX(85px);
-  transform: translateX(85px);
+    transform: translateX(22px);
+    background-color: white;
 }
 
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
+.slider.round { border-radius: 34px; }
+.slider.round:before { border-radius: 50%; }
 
-.slider.round:before {
-  border-radius: 50%;
+/* --- Loader --- */
+.gps-loader {
+    margin-left: 50%;
+    transform: translateX(-50%);
+    margin-top: 40px;
 }
+.gps-loader .ring { stroke: var(--border); opacity: 0.3; }
+.gps-loader .spin { stroke: var(--primary); }
