@@ -231,7 +231,8 @@ function checkPosition(coords) {
 
         // Update Status Box message
         if (foundCount > 0) {
-            statusEl.textContent = `Kia Ora! You caught ${foundCount} symbol(s)!`;
+            statusEl.textContent = `🎉🎉 Kia Ora! 🎉🎉 \n You caught ${foundCount} symbol(s)!`;
+            statusEl.textContent.style.color = "#155724";
             statusEl.style.backgroundColor = "#d4edda"; 
         } else {
             // Show helpful message about the closest item
@@ -239,8 +240,8 @@ function checkPosition(coords) {
                 ? (closestDistance/1000).toFixed(1) + "km" 
                 : Math.round(closestDistance) + "m";
             
-            statusEl.textContent = `Scanning complete. Closest symbol is ${distStr} away. Check Collection tab for hints!`;
-            statusEl.style.backgroundColor = "#fff3cd"; // Yellow warning color
+            statusEl.textContent = `Scanning complete. \n Closest symbol is ${distStr} away. \n Keep going! 🏃‍♀️ \n (Check Collection tab for hints!)`;
+            //statusEl.style.backgroundColor = "#fff3cd"; // Yellow warning color
         }
         
         hideSpinner();
