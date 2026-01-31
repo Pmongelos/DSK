@@ -59,50 +59,62 @@ function saveSymbol(symbolId) {
 }
 
 function updateSymbolUI() {
-
-    const store = db.transaction("foundSymbols").objectStore("foundSymbols");
-    const cards = document.querySelectorAll('.symbol-card');
+    const transaction = db.transaction("foundSymbols", "readonly");
+    const store = transaction.objectStore("foundSymbols");
 
     store.openCursor().onsuccess = (e) => {
         const cursor = e.target.result;
         if (cursor) {
-            symbolId = cursor.value.id;
-            cards.forEach(card => {
-                if (card.dataset.id === symbolId) {
-                    card.classList.replace('hidden', 'found');
-                    card.innerHTML = `
-                        <div>
-                        <h3>${symbols.find(s => s.id === symbolId).name}</h3>
-                        <p>${symbols.find(s => s.id === symbolId).description}</p>
-                        <small>Discovered at ${cursor.value.date}</small>
-                        </div>
-                        <div class="img-container"><img src=./img/${symbols.find(s => s.id === symbolId).img} style="width: 100%"></div>
-                    `;
-                }
-            });
+            const symbolId = cursor.value.id;
+            const symbolData = symbols.find(s => s.id === symbolId);
+            
+            // Direct DOM access using the data-id attribute
+            const card = document.querySelector(`.symbol-card[data-id="${symbolId}"]`);
+
+            // Only update if it hasn't been visually updated yet
+            if (card && card.classList.contains('hidden')) {
+                card.classList.replace('hidden', 'found');
+                // Use a safer innerHTML approach or build elements, but here is the cleaned template:
+                card.innerHTML = `
+                    <div style="flex: 1;">
+                        <h3 style="margin-top:0;">${symbolData.name}</h3>
+                        <p>${symbolData.description}</p>
+                        <small style="color: #666;">Discovered: ${cursor.value.date}</small>
+                    </div>
+                    <div class="img-container">
+                        <img src="./img/${symbolData.img}" alt="${symbolData.name}" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                `;
+            }
 
             cursor.continue();
-            
         }
     };
-
-    
 }
 
 function renderSymbolList() {
-            const container = document.getElementById('symbols-container');
-            symbols.forEach(symbol => {
-                const card = document.createElement('div');
-                card.className = 'symbol-card hidden';
-                card.dataset.id = symbol.id;
-                card.innerHTML = `
-                    <h3>${symbol.name}</h3>
-                    <p>Status: Not discovered</p>
-                    <div class="img-container"><img src=./img/${symbol.img} ></div>
-                `;
-                container.appendChild(card);
-            });
-        }
+    const container = document.getElementById('symbols-container');
+    container.innerHTML = ''; // Clear existing to prevent duplicates on reload
+    
+    symbols.forEach(symbol => {
+        const card = document.createElement('div');
+        card.className = 'symbol-card hidden';
+        card.dataset.id = symbol.id;
+        
+        // Added a generic placeholder image for undiscovered items
+        card.innerHTML = `
+            <div style="flex: 1;">
+                <h3>???</h3>
+                <p>Status: Not discovered yet</p>
+                <p class="distance-hint" style="font-style: italic; color: #888;">Unknown distance</p>
+            </div>
+            <div class="img-container" style="display: flex; align-items: center; justify-content: center; background: #ddd;">
+                <span style="font-size: 2em; color: #aaa;">?</span>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
 
 
 
@@ -158,25 +170,23 @@ function manualScan() {
 
 function checkPosition(coords) {
     const statusEl = document.getElementById('status');
-    const spinner = document.getElementById('gps-loader');
-    const scanBtn = document.getElementById('scanBtn');
-    const scanBtnManual = document.getElementById('scanBtnManual');
-    const store = db.transaction("foundSymbols").objectStore("foundSymbols");
-    let foundCount = 0;
-    
-    try {
-        symbols.forEach(symbol => {
-            // Comprobar si el símbolo ya ha sido encontrado
-            let symbolId = null;
-            store.openCursor().onsuccess = (e) => {
-                const cursor = e.target.result;
-                if (cursor) {
-                    symbolId = cursor.value.id;
-                    if (symbolId === symbol.id) return;
-                }
-                cursor.continue();
-            };
+    // Open a read-only transaction to get all currently found symbols first
+    const transaction = db.transaction(["foundSymbols"], "readonly");
+    const store = transaction.objectStore("foundSymbols");
+    const getAllRequest = store.getAll(); // More efficient than cursor for just IDs
 
+    getAllRequest.onsuccess = () => {
+        const foundItems = getAllRequest.result;
+        // Create a Set of IDs for O(1) lookup time
+        const foundIds = new Set(foundItems.map(item => item.id));
+        
+        let foundCount = 0;
+
+        symbols.forEach(symbol => {
+            // 1. Skip if already found
+            if (foundIds.has(symbol.id)) return;
+
+            // 2. Calculate distance
             const distance = calculateDistance(
                 coords.latitude, 
                 coords.longitude, 
@@ -184,21 +194,28 @@ function checkPosition(coords) {
                 symbol.lng
             );
             
+            // 3. Catch logic (Threshold: 50 meters)
             if (distance <= 50) {
                 saveSymbol(symbol.id);
-                updateSymbolUI();
                 foundCount++;
             }
         });
-        
+
         if (foundCount > 0) {
-            statusEl.textContent = `Found ${foundCount} new symbols!`;
+            statusEl.textContent = `Kia Ora! You found ${foundCount} new symbol(s)!`;
+            statusEl.style.backgroundColor = "#e8f5e9"; // Light green success bg
         } else {
-            statusEl.textContent = 'No new symbols found nearby.';
+            statusEl.textContent = 'No new symbols nearby. Keep exploring!';
+            statusEl.style.backgroundColor = "white";
         }
-    } finally {
+        
         hideSpinner();
-    }
+    };
+
+    getAllRequest.onerror = (e) => {
+        console.error("DB Error", e);
+        hideSpinner();
+    };
 }
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
