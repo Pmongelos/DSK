@@ -94,29 +94,27 @@ function updateSymbolUI() {
 
 function renderSymbolList() {
     const container = document.getElementById('symbols-container');
-    container.innerHTML = ''; // Clear existing to prevent duplicates on reload
+    container.innerHTML = ''; 
     
     symbols.forEach(symbol => {
         const card = document.createElement('div');
-        card.className = 'symbol-card hidden';
+        // We use 'locked' instead of 'hidden' so it is visible but grayed out
+        card.className = 'symbol-card locked'; 
         card.dataset.id = symbol.id;
         
-        // Added a generic placeholder image for undiscovered items
         card.innerHTML = `
             <div style="flex: 1;">
                 <h3>???</h3>
-                <p>Status: Not discovered yet</p>
-                <p class="distance-hint" style="font-style: italic; color: #888;">Unknown distance</p>
+                <p>Status: <strong>Undiscovered</strong></p>
+                <p class="distance-hint">Signal: Unknown</p>
             </div>
-            <div class="img-container" style="display: flex; align-items: center; justify-content: center; background: #ddd;">
-                <span style="font-size: 2em; color: #aaa;">?</span>
+            <div class="img-container" style="display: flex; align-items: center; justify-content: center; background: #ccc;">
+                <span style="font-size: 24px;">🔒</span>
             </div>
         `;
         container.appendChild(card);
     });
 }
-
-
 
 //Funciones de escaneo y posición
 function startScan() {
@@ -170,60 +168,79 @@ function manualScan() {
 
 function checkPosition(coords) {
     const statusEl = document.getElementById('status');
-    // Open a read-only transaction to get all currently found symbols first
+    
+    // 1. Get all found symbols from DB first
     const transaction = db.transaction(["foundSymbols"], "readonly");
     const store = transaction.objectStore("foundSymbols");
-    const getAllRequest = store.getAll(); // More efficient than cursor for just IDs
+    const getAllRequest = store.getAll();
 
     getAllRequest.onsuccess = () => {
         const foundItems = getAllRequest.result;
-        // Create a Set of IDs for O(1) lookup time
+        // Create a Set of IDs we already own
         const foundIds = new Set(foundItems.map(item => item.id));
         
         let foundCount = 0;
+        let closestDistance = Infinity;
 
         symbols.forEach(symbol => {
-            // 1. Skip if already found
-            if (foundIds.has(symbol.id)) return;
-
-            // 2. Calculate distance
+            // Calculate distance for EVERY symbol (found or not)
             const distance = calculateDistance(
                 coords.latitude, 
                 coords.longitude, 
                 symbol.lat, 
                 symbol.lng
             );
-            
-            // 3. Catch logic (Threshold: 50 meters)
-            // Inside the symbols.forEach loop in checkPosition...
-            if (distance > 50) {
-                // Update the hint on the card even if not caught
-                const card = document.querySelector(`.symbol-card[data-id="${symbol.id}"]`);
-                if (card && card.classList.contains('hidden')) {
-                    const hintEl = card.querySelector('.distance-hint');
-                    if (hintEl) {
-                        let hintText = "";
-                        if (distance < 200) hintText = "🔥 Very Hot! (< 200m)";
-                        else if (distance < 500) hintText = "☀️ Hot (< 500m)";
-                        else if (distance < 1000) hintText = "☁️ Warm (< 1km)";
-                        else hintText = "❄️ Cold (> 1km)";
-                        
-                        hintEl.textContent = `Signal strength: ${hintText}`;
-                    }
+
+            // Find the card in the UI
+            const card = document.querySelector(`.symbol-card[data-id="${symbol.id}"]`);
+
+            // LOGIC A: If we already have it, ensure UI is updated and skip logic
+            if (foundIds.has(symbol.id)) {
+                if (card && card.classList.contains('locked')) {
+                    // If it was locked, unlock it now (visual update)
+                    updateSymbolCardToFound(card, symbol, foundItems.find(i => i.id === symbol.id).date);
+                }
+                return; 
+            }
+
+            // LOGIC B: If we don't have it, update the DISTANCE HINT
+            if (card) {
+                const hintEl = card.querySelector('.distance-hint');
+                if (hintEl) {
+                    let hintText = "";
+                    if (distance < 200) hintText = "🔥 BURNING HOT (< 200m)";
+                    else if (distance < 500) hintText = "☀️ Hot (< 500m)";
+                    else if (distance < 1000) hintText = "☁️ Warm (< 1km)";
+                    else hintText = "❄️ Cold (> 1km)";
+                    
+                    hintEl.textContent = `Signal: ${hintText}`;
                 }
             }
+
+            // LOGIC C: Check if we are close enough to catch it (50m)
             if (distance <= 50) {
                 saveSymbol(symbol.id);
                 foundCount++;
+                // Update UI immediately
+                if (card) updateSymbolCardToFound(card, symbol, new Date().toLocaleString());
             }
+            
+            // Track closest for status message
+            if (distance < closestDistance) closestDistance = distance;
         });
 
+        // Update Status Box message
         if (foundCount > 0) {
-            statusEl.textContent = `🎉🎉Kia Ora! You found ${foundCount} new symbol(s)!🎊🎊`;
-            statusEl.style.backgroundColor = "#98fca0ff"; // Light green success bg
+            statusEl.textContent = `Kia Ora! You caught ${foundCount} symbol(s)!`;
+            statusEl.style.backgroundColor = "#d4edda"; 
         } else {
-            statusEl.textContent = 'No new symbols nearby. Keep exploring!';
-            statusEl.style.backgroundColor = "white";
+            // Show helpful message about the closest item
+            const distStr = closestDistance > 1000 
+                ? (closestDistance/1000).toFixed(1) + "km" 
+                : Math.round(closestDistance) + "m";
+            
+            statusEl.textContent = `Scanning complete. Closest symbol is ${distStr} away. Check Collection tab for hints!`;
+            statusEl.style.backgroundColor = "#fff3cd"; // Yellow warning color
         }
         
         hideSpinner();
@@ -233,6 +250,22 @@ function checkPosition(coords) {
         console.error("DB Error", e);
         hideSpinner();
     };
+}
+
+// Helper to handle the UI switch from Locked -> Found
+function updateSymbolCardToFound(card, symbol, date) {
+    card.classList.remove('locked');
+    card.classList.add('found');
+    card.innerHTML = `
+        <div style="flex: 1;">
+            <h3>${symbol.name}</h3>
+            <p>${symbol.description}</p>
+            <small style="color: #555;">Discovered: ${date}</small>
+        </div>
+        <div class="img-container">
+            <img src="./img/${symbol.img}" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+    `;
 }
 
 function calculateDistance(lat1, lon1, lat2, lon2) {

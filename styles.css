@@ -43,8 +43,17 @@ body {
 .symbol-card.found {
     border-left: 4px solid #FF9800;
 }
-.hidden {
-    display: none;
+
+.symbol-card.locked {
+    background-color: #e0e0e0; /* Grey background for locked items */
+    border-left: 4px solid #999;
+    opacity: 0.8;
+}
+
+.distance-hint {
+    font-weight: bold;
+    color: #d32f2f; /* Red text for the hint */
+    margin-top: 5px;
 }
 h1 {
     color: #2E7D32;
