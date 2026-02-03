@@ -294,7 +294,8 @@ input:checked + .slider:before {
 .gps-loader {
     margin-left: 50%;
     transform: translateX(-50%);
-    margin-top: 40px;
 }
-.gps-loader .ring { stroke: var(--border); opacity: 0.3; }
-.gps-loader .spin { stroke: var(--primary); }
+.gps-loader .ring { fill: none; stroke: #f6c34a; stroke-width: 4; opacity: 0.25; }
+.gps-loader .spin { fill: none; stroke: #f6c34a; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 80; stroke-dashoffset: 60; transform-origin: 25px 25px; animation: rotate 1s linear infinite, dash 1.2s ease-in-out infinite; }
+@keyframes rotate { 100% { transform: rotate(360deg); } }
+@keyframes dash { 0% { stroke-dashoffset: 80; } 50% { stroke-dashoffset: 30; } 100% { stroke-dashoffset: 80; } }

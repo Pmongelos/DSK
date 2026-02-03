@@ -1,12 +1,149 @@
 // Symbol database
 const symbols = [
-    { id: 'ta001', name: 'Kauri Tree', img: "", lat: -35.2760, lng: 173.5511, description: 'Ancient native tree of New Zealand'},
-    { id: 'ta002', name: 'Mountain Peak', img: "", lat: -39.2920, lng: 176.3782, description: 'Highest point on the trail'},
-    { id: 'ta003', name: 'Urutengangana', img: "urutengangana.jpg", description: "Dios de la luz. El primogénito de los dioses.", lat: -41.1680009, lng: 174.0608852},
-    { id: 'ta004', name: 'Tumatauenga', img: "tumatauenga.jpg", description: "Dios de la guerra y la caza.", lat: -39.3524332, lng: 174.2214992},
-    { id: 'ta005', name: 'Rūaumoko', img: "ruaumoko.jpg", description: "Dios de los terremotos y volcanes.", lat: -42.1119642, lng: 172.6010590},
-    { id: 'ta006', name: 'Pekapeka', img: "pekapekamaori.jpg", description: "Murciélago nativo maorí.", lat: -37.0661338, lng: 174.8635439 },
-    { id: 'ta007', name: 'Rongo', img: "rongo.jpg", description: "Dios de la paz y la agricultura.", lat: -42.9150553, lng: 171.9547704}
+  {
+    name: "Urutengangana",
+    img: "urutengangana.jpg",
+    description: "Urutengangana is the Māori god of light. He is the eldest of the children of Ranginui the Sky Father and Papatūānuku the Earth Mother. His children were the gods of the stars and the moon.",
+    lat: -44.84371667042822,
+    lon: 168.34999424254082,
+    nearby: "Kinloch Campsite"
+  },
+  {
+    name: "Tumatauenga",
+    img: "tumatauenga.jpg",
+    description: "Tū or Tumatauenga is the Māori god of war, hunting, food cultivation, fishing and cooking. The Māori would dedicate hunting trips and war-parties to Tūmatauenga.",
+    lat: -44.804479311001664,
+    lon: 168.8626598779602,
+    nearby: "Roses Hut"
+  },
+  {
+    name: "Rūaumoko",
+    img: "ruaumoko.jpg",
+    description: "Rūaumoko is the god of earthquakes, volcanoes and seasons. He is the youngest son of Ranginui the Sky Father and Papatūānuku the Earth Mother. Although thought to be a kind god, Rūaumoko (like earthquakes and volcanoes) also represents danger and destruction.",
+    lat: -44.739759610597034,
+    lon: 168.9846743320527,
+    nearby: "Fern Burn Hut"
+  },
+  {
+    name: "Rongo",
+    img: "rongo.jpg",
+    description: "In Māori mythology, Rongo or Rongo-mā-Tāne is the god of cultivated plants, or agriculture, especially the production of kūmara (yams). The Māori relied heavily on their harvests, and would offer the first kumara of the season to Rongo.",
+    lat: -44.77415855670547,
+    lon: 168.9417571287086,
+    nearby: "Highland Creek Hut"
+  },
+  {
+    name: "Mangopare",
+    img: "mangopare.jpg",
+    description: "The Mangopare symbol depicts the hammerhead shark. It symbolizes strength, termination, strong will and fighting spirit. Māori believed sharks to be protective spirits, and shark teeth necklaces were common status symbols amongst tribe leaders.",
+    lat: -45.18835500770874,
+    lon: 168.1646390814101,
+    nearby: "Careys Hut"
+  },
+  {
+    name: "Moana",
+    img: "moana.jpg",
+    description: "Moana means an open body of water – an ocean or sea. The term Moana, meaning ocean, is common to all Polynesian cultures. To the Māori, the sea was the source of all life, and the sea was relied on for sustenance, through fishing. The sea can be calm, energetic or dangerous at different times. These qualities are reflected in the meaning of the Moana symbol.",
+    lat: -45.140184228882404,
+    lon: 168.1792535737948,
+    nearby: "Boundary Hut"
+  },
+  {
+    name: "Koru Aihe",
+    img: "koruahe.jpg",
+    description: "The Koru Aihe inspired by dolphins symbolizes playfulness, harmony and friendship. Māori revered dolphins, as they did whales, believing them to be water spirits. Legendary tales tell of sailors being guided through treacherous waterways by gods who had taken the form of dolphins.",
+    lat: -45.06744151556864,
+    lon: 168.5465170577338,
+    nearby: "Twelve Mile Delta Campsite"
+  },
+  {
+    name: "Koru Honu",
+    img: "koruhonu.jpg",
+    description: "The Koru Honu depicts a sea turtle in the act of swimming. Turtles symbolize travel and navigation in Māori culture. Additional meanings include fertility, longevity, peacefulness and unity.",
+    lat: -45.05092350868254,
+    lon: 168.22225726264088,
+    nearby: "Taipo Hut"
+  },
+  {
+    name: "Wera",
+    img: "wera.jpg",
+    description: "The Wera symbol represents the tail of a whale. Whales were tapu (sacred) to the Māori. They were thought to be descended from the god of the ocean and were therefore supernatural in nature. The Wera symbolizes the ocean and a guardian spirit, especially for those at sea.",
+    lat: -44.98089614026388,
+    lon: 168.2625391134736,
+    nearby: "Greenstone Hut"
+  },
+  {
+    name: "Toki Adze",
+    img: "tokiadze.jpg",
+    description: "The Toki Adze is a ceremonial chisel used by the Māori for occasions such as the felling of a tree in order to carve a canoe, or to produce carved symbols to adorn buildings and structures that are important to the tribe. As a symbol, the Toki represents strength and authority.",
+    lat: -44.86689161629982,
+    lon: 168.8209805515156,
+    nearby: "Macetown Campsite"
+  },
+  {
+    name: "pekapeka",
+    img: "pekapekamaori.jpg",
+    description: "Pekapeka is the Māori word for bat. Bats are the only land mammal native to New Zealand. The Māori would hunt by kindling a fire in the hollow of a tree, catching the bats in the air as they tried to escape",
+    lat: -44.979319844821106,
+    lon: 168.26273263300192,
+    nearby: "Greenstone Campsite"
+  },
+  {
+    name: "Hei Taiaha",
+    img: "heitaiaha.jpg",
+    description: "A Taiaha is a traditional Māori weapon. It is a short fighting staff weapon made for close-quarters combat. Carved from either wood or whalebone, these weapons represent treasured items. The Hei Taiaha symbolizes the Māori warrior culture.",
+    lat: -44.95628045870556,
+    lon: 168.2743571571188,
+    nearby: "Slip Flat Hut"
+  },
+  {
+    name: "Hei Tiki",
+    img: "heitiki.jpg",
+    description: "The Hei Tiki is commonly regarded as a symbol of good luck and of fertility, representing the unborn human embryo. Hei Tiki is thought to be a representation of the first man. The Māori believe the wearer of a tiki talisman to be clear thinking, perceptive, loyal and knowledgeable.",
+    lat: -46.26162215145963,
+    lon: 167.8599723016098,
+    nearby: "Martin's Hut"
+  },
+  {
+    name: "Manaia",
+    img: "manaia.jpg",
+    description: "The Manaia symbol represents a mythological spiritual guardian, or messenger. It is traditionally depicted with the head of a bird, body of a man and the tail of a fish. The Manaia guards against evil and guides the spirit.",
+    lat: -46.29158318316038,
+    lon: 167.85187763332297,
+    nearby: "Turnbull's (Big Dam) Hut"
+  },
+  {
+    name: "Pikorua Double Twist",
+    img: "pikorua.jpg",
+    description: "The Pikorua double twist represents the joining together of two people, or two cultures for eternity. Although they may experience ups and downs, they will remain bonded by friendship and loyalty for life.",
+    lat: -45.80391596464067,
+    lon: 167.8811638384799,
+    nearby: "Telford Campsite"
+  },
+  {
+    name: "Pikorua Single Twist ",
+    img: "pikorua1.jpg",
+    description: "The Pikorua single twist represents the path of life, it is the symbol of eternity. It represents the joining together of two people. The meaning of the Pikorua single twist is different from the double twist Pikorua",
+    lat: -45.593313041200155,
+    lon: 167.9515867936478,
+    nearby: "Lower Princhester Hut"
+  },
+  {
+    name: "Hei Matau",
+    img: "heimatau.jpg",
+    description: "The Hei Matau, or the fish hook, symbolizes prosperity. In their quiet corner of the South Pacific, fish stocks were plentiful, and the Māori knew that a man (or woman) who had the means to catch fish would prosper. The Hei Matau also represents strength, determination (required for good fishing), good health (acquired by good eating), and providing a safe journey over water.",
+    lat: -45.70739004211443,
+    lon: 167.9993234310969,
+    nearby: "Aparima Hut"
+  },
+  {
+    name: "Koru",
+    img: "koru.jpg",
+    description: "The Koru motif is the cornerstone of much Māori art. It is not considered tapu (sacred) in and of itself, but recurs in sacred designs. It represents the young frond of the silver fern, which is native only to New Zealand. As such, in recent years the symbol has come to be used to represent New Zealand in many ways, not only Māori culture. The Koru symbolizes life, growth, strength and peace. Its shape conveys ideas of movement, latent and potential energy, creation and renewal, light and enlightenment.",
+    lat: -45.77928833245715,
+    lon: 167.9402280465084,
+    nearby: "Lower Wairaki Hut"
+  }
 ];
 
 let foundSymbols = [];
@@ -241,8 +378,8 @@ function checkPosition(coords) {
             const distStr = closestDistance > 1000 
                 ? (closestDistance/1000).toFixed(1) + "km" 
                 : Math.round(closestDistance) + "m";
-            
-            statusEl.textContent = `Scanning complete. \n Closest symbol is ${distStr} away. \n Keep going! 🏃‍♀️ \n (Check Collection tab for hints!)`;
+
+            statusEl.innerHTML = `Scanning complete. <br/> Closest symbol is ${distStr} away. <br/> Keep going!<br/> 🏃‍♀️🏃‍♀️🏃‍♀️ <br/> (Check Collection tab for hints!)`;
             //statusEl.style.backgroundColor = "#fff3cd"; // Yellow warning color
         }
         
@@ -335,7 +472,7 @@ function showSpinner() {
     const spinner = document.getElementById('gps-loader');
     const modes = document.getElementById('mode-inputs');
     const status = document.getElementById('status');
-    if (status) status.style.display = 'none';
+    //if (status) status.style.display = 'none';
     if (spinner) spinner.style.display = 'inline-block';
     if (modes) modes.style.display = 'none';
     spinnerStart = Date.now();
