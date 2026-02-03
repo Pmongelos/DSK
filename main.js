@@ -109,6 +109,7 @@ function renderSymbolList() {
                 <p class="distance-hint">Signal: Unknown</p>
             </div>
             <div class="img-container" style="display: flex; align-items: center; justify-content: center; background: #ccc;">
+                <img src="./img/${symbol.img}" alt="${symbol.name}" style="">
                 <span style="font-size: 24px;">🔒</span>
             </div>
         `;
