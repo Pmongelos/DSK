@@ -28,12 +28,13 @@ request.onupgradeneeded = (e) => {
 
 request.onsuccess = (e) => {
     db = e.target.result;
+    renderSymbolList();
     updateSymbolUI();
 };
 
 // Initialize app
 document.addEventListener('DOMContentLoaded', () => {
-    renderSymbolList();
+    
     // hide spinner on load
     const spinner = document.getElementById('gps-loader');
     if (spinner) spinner.style.display = 'none';
@@ -114,7 +115,6 @@ function renderSymbolList() {
             </div>
         `;
         container.appendChild(card);
-        updateSymbolUI();
     });
 }
 
