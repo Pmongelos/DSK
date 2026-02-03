@@ -113,6 +113,7 @@ function renderSymbolList() {
             </div>
         `;
         container.appendChild(card);
+        updateSymbolUI();
     });
 }
 
