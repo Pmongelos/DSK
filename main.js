@@ -29,7 +29,7 @@ request.onupgradeneeded = (e) => {
 request.onsuccess = (e) => {
     db = e.target.result;
     renderSymbolList();
-    updateSymbolUI();
+    updateSymbolUI()
 };
 
 // Initialize app
@@ -73,8 +73,8 @@ function updateSymbolUI() {
             const card = document.querySelector(`.symbol-card[data-id="${symbolId}"]`);
 
             // Only update if it hasn't been visually updated yet
-            if (card && card.classList.contains('hidden')) {
-                card.classList.replace('hidden', 'found');
+            if (card && card.classList.contains('locked')) {
+                card.classList.replace('locked', 'found');
                 // Use a safer innerHTML approach or build elements, but here is the cleaned template:
                 card.innerHTML = `
                     <div style="flex: 1;">
