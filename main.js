@@ -174,6 +174,8 @@ const symbols = [
 ];
 
 let foundSymbols = [];
+// Saved scroll position used to lock/unlock page when an image is fullscreen
+let _savedScrollY = 0;
 
 // 1. Registro del Service Worker
 if ('serviceWorker' in navigator) {
@@ -473,6 +475,14 @@ function openFullscreen(container) {
     });
 
     if (container.classList.contains('fullscreen')) return; // already open
+    // Lock page scroll
+    try {
+        _savedScrollY = window.scrollY || window.pageYOffset || 0;
+        document.body.classList.add('no-scroll');
+        // Prevent layout shift by setting top
+        document.body.style.top = `-${_savedScrollY}px`;
+    } catch (e) {}
+
     container.classList.add('fullscreen');
 
     // Add a close button for clearer affordance on touch devices
@@ -504,6 +514,13 @@ function closeFullscreen(container) {
         try { container.focus(); } catch (e) {}
         btn.remove();
     }
+    // Restore page scroll
+    try {
+        document.body.classList.remove('no-scroll');
+        document.body.style.top = '';
+        window.scrollTo(0, _savedScrollY || 0);
+        _savedScrollY = 0;
+    } catch (e) {}
 }
 
 document.addEventListener('click', (e) => {

@@ -246,6 +246,15 @@ h2 {
     outline-offset: 2px;
 }
 
+/* Prevent page scrolling when a fullscreen image is open. We use position fixed on body and
+     preserve the scroll position via inline top style set by JS. */
+.no-scroll {
+    position: fixed;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+}
+
 /* Found vs Locked States */
 .symbol-card.found {
     border-color: var(--accent-success);
