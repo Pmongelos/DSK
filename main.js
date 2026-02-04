@@ -170,6 +170,15 @@ const symbols = [
     lat: -44.610717,
     lng: 169.278968,
     nearby: "Lake Hawea"
+  },
+  {
+    id: "ta020",
+    name: "Bluff",
+    img: "bluff.jpg",
+    description: "¡Has llegado a Bluff! ¡Eres una crack! Estoy orgulloso de haber estado contigo al inicio de esta aventura y verte avanzar en cada paso del camino. ¡Sigue así chuli!",
+    lat: -46.613694,
+    lng: 168.33736999999996,
+    nearby: "Bluff"
   }
 ];
 
@@ -247,7 +256,8 @@ function updateSymbolUI() {
                     <div style="flex: 1;">
                         <h3 style="margin-top:0;">${symbolData.name}</h3>
                         <p>${symbolData.description}</p>
-                        <small style="color: #666;">Discovered: ${cursor.value.date}</small>
+                        <small style="color: #666;">Discovered: ${cursor.value.date}</small><br/>
+                        <small style="color: #555;">Near by: ${symbolData.nearby}</small>
                     </div>
                     <div class="img-container">
                         <img src="./img/${symbolData.img}" alt="${symbolData.name}" style="width: 100%; height: 100%; object-fit: cover;">
@@ -379,17 +389,17 @@ function checkPosition(coords) {
                 const hintEl = card.querySelector('.distance-hint');
                 if (hintEl) {
                     let hintText = "";
-                    if (distance < 200) hintText = "🔥 BURNING HOT (< 200m)";
-                    else if (distance < 500) hintText = "☀️ Hot (< 500m)";
-                    else if (distance < 1000) hintText = "☁️ Warm (< 1km)";
-                    else hintText = "❄️ Cold (> 1km)";
+                    if (distance < 10000) hintText = "🔥 BURNING HOT (< 10km)";
+                    else if (distance < 20000) hintText = "☀️ Hot (< 20km)";
+                    else if (distance < 30000) hintText = "☁️ Warm (< 30km)";
+                    else hintText = "❄️ Cold (> 30km)";
                     
                     hintEl.textContent = `Signal: ${hintText}`;
                 }
             }
 
-            // LOGIC C: Check if we are close enough to catch it (50m)
-            if (distance <= 50) {
+            // LOGIC C: Check if we are close enough to catch it (5km)
+            if (distance <= 5000) {
                 foundId = symbol.id;
                 date = new Date().toLocaleString();
                 saveSymbol(symbol.id);
@@ -414,6 +424,7 @@ function checkPosition(coords) {
                 </div>
                 <div style="flex: 1;">
                     <p>${symbols.find(s => s.id === foundId).description}</p>
+                    <small style="color: #555;">Near by: ${symbols.find(s => s.id === foundId).nearby}</small><br/>
                     <small style="color: #555;">Discovered: ${date}</small>
                 </div>
             `;
@@ -445,6 +456,7 @@ function updateSymbolCardToFound(card, symbol, date) {
             <h3>${symbol.name}</h3>
             <p>${symbol.description}</p>
             <small style="color: #555;">Discovered: ${date}</small>
+            <small style="color: #555;">Near by: ${symbol.nearby}</small><br/>
         </div>
         <div class="img-container">
             <img src="./img/${symbol.img}" style="width: 100%; height: 100%; object-fit: cover;">
@@ -522,6 +534,20 @@ function closeFullscreen(container) {
         _savedScrollY = 0;
     } catch (e) {}
 }
+
+// Close any open fullscreen images on ANY click (capture phase) so a single tap anywhere exits fullscreen.
+document.addEventListener('click', (e) => {
+    const open = document.querySelector('.img-container.fullscreen');
+    if (!open) return; // nothing to do
+
+    // Close all open fullscreen containers
+    document.querySelectorAll('.img-container.fullscreen').forEach(c => closeFullscreen(c));
+
+    // Prevent the regular delegated click handler from re-opening or toggling in the same event
+    e.stopPropagation();
+    // Also prevent default just in case
+    e.preventDefault();
+}, { capture: true });
 
 document.addEventListener('click', (e) => {
     // Ignore clicks on the close button itself (it has its own handler and stops propagation)
