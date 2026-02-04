@@ -183,8 +183,22 @@ const symbols = [
 ];
 
 let foundSymbols = [];
+// Number of symbols already caught (stored in IndexedDB)
+let catchCount = 0;
 // Saved scroll position used to lock/unlock page when an image is fullscreen
 let _savedScrollY = 0;
+
+// Update the Collection tab button label to show current count
+function updateCollectionButton() {
+    try {
+        const btn = document.querySelector('.tabs .tab[data-tab="tab2"]');
+        if (!btn) return;
+        const total = Array.isArray(symbols) ? symbols.length : 20;
+        btn.textContent = `Collection (${catchCount}/${total})`;
+    } catch (e) {
+        // ignore
+    }
+}
 
 // 1. Registro del Service Worker
 if ('serviceWorker' in navigator) {
@@ -203,8 +217,27 @@ request.onupgradeneeded = (e) => {
 
 request.onsuccess = (e) => {
     db = e.target.result;
+    // Initialize UI
     renderSymbolList();
-    updateSymbolUI()
+    updateSymbolUI();
+
+    // Load current count of found symbols into catchCount
+    try {
+        const countTx = db.transaction(["foundSymbols"], "readonly");
+        const countStore = countTx.objectStore("foundSymbols");
+        const countReq = countStore.count();
+        countReq.onsuccess = () => {
+            catchCount = countReq.result || 0;
+            // Optional: expose in console for debugging
+            console.log('catchCount initialized:', catchCount);
+            try { updateCollectionButton(); } catch (e) {}
+        };
+        countReq.onerror = () => {
+            console.warn('Failed to initialize catchCount');
+        };
+    } catch (err) {
+        console.warn('Error counting foundSymbols on DB open', err);
+    }
 };
 
 // Initialize app
@@ -219,6 +252,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (scanBtn) scanBtn.addEventListener('click', startScan);
     if (scanBtnManual) scanBtnManual.addEventListener('click', manualScan);
 
+    // Set collection button label on initial DOM ready
+    try { updateCollectionButton(); } catch (e) {}
+
 });
 
 
@@ -231,6 +267,10 @@ function saveSymbol(symbolId) {
 
     store.add(newSymbol);
     transaction.oncomplete = () => {
+        // Increment the cached count and update UI
+        catchCount = (typeof catchCount === 'number') ? catchCount + 1 : 1;
+        console.log('catchCount incremented:', catchCount);
+        try { updateCollectionButton(); } catch (e) {}
         updateSymbolUI();
     };
 }
@@ -355,6 +395,14 @@ function checkPosition(coords) {
 
     getAllRequest.onsuccess = () => {
         const foundItems = getAllRequest.result;
+        // Keep catchCount in sync with DB results
+        try {
+            catchCount = Array.isArray(foundItems) ? foundItems.length : 0;
+        } catch (err) {
+            catchCount = 0;
+        }
+        console.log('catchCount refreshed from DB:', catchCount);
+        try { updateCollectionButton(); } catch (e) {}
         // Create a Set of IDs we already own
         const foundIds = new Set(foundItems.map(item => item.id));
         
