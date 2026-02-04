@@ -357,6 +357,7 @@ function checkPosition(coords) {
                 if (card && card.classList.contains('locked')) {
                     // If it was locked, unlock it now (visual update)
                     updateSymbolCardToFound(card, symbol, foundItems.find(i => i.id === symbol.id).date);
+                    foundCount ++;
                 }
                 return; 
             }
