@@ -174,7 +174,7 @@ const symbols = [
   {
     id: "ta020",
     name: "Bluff",
-    img: "bluff.jpg",
+    img: "bluff.jpeg",
     description: "¡Has llegado a Bluff! ¡Eres una crack! Estoy orgulloso de haber estado contigo al inicio de esta aventura y verte avanzar en cada paso del camino. ¡Sigue así chuli!",
     lat: -46.613694,
     lng: 168.33736999999996,
