@@ -466,38 +466,81 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
 //Funciones de UI
 // Enlarge image on click — use event delegation so dynamically created .img-container elements work
+function openFullscreen(container) {
+    // Close any other fullscreen container first
+    document.querySelectorAll('.img-container.fullscreen').forEach(el => {
+        if (el !== container) closeFullscreen(el);
+    });
+
+    if (container.classList.contains('fullscreen')) return; // already open
+    container.classList.add('fullscreen');
+
+    // Add a close button for clearer affordance on touch devices
+    if (!container.querySelector('.img-close-btn')) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'img-close-btn';
+        btn.setAttribute('aria-label', 'Close image');
+        btn.innerHTML = '&times;';
+
+        // Stop propagation so the delegated click handler doesn't re-toggle
+        btn.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            closeFullscreen(container);
+        });
+
+        container.appendChild(btn);
+        // Move focus to the close button for keyboard users
+        btn.focus();
+    }
+}
+
+function closeFullscreen(container) {
+    if (!container.classList.contains('fullscreen')) return;
+    container.classList.remove('fullscreen');
+    const btn = container.querySelector('.img-close-btn');
+    if (btn) {
+        // Attempt to return focus to the container for accessibility
+        try { container.focus(); } catch (e) {}
+        btn.remove();
+    }
+}
+
 document.addEventListener('click', (e) => {
+    // Ignore clicks on the close button itself (it has its own handler and stops propagation)
+    if (e.target.closest('.img-close-btn')) return;
+
     const container = e.target.closest('.img-container');
     if (!container) return;
 
-    const toggleFullscreen = () => {
-        // Ensure only one container is fullscreen at a time
-        document.querySelectorAll('.img-container.fullscreen').forEach(el => {
-            if (el !== container) el.classList.remove('fullscreen');
-        });
-        container.classList.toggle('fullscreen');
+    const doToggle = () => {
+        if (container.classList.contains('fullscreen')) {
+            closeFullscreen(container);
+        } else {
+            openFullscreen(container);
+        }
     };
 
     // Use View Transitions API when available for a smoother effect
     if (!('startViewTransition' in document) || typeof document.startViewTransition !== 'function') {
-        toggleFullscreen();
+        doToggle();
         return;
     }
 
     try {
         document.startViewTransition(() => {
-            toggleFullscreen();
+            doToggle();
         });
     } catch (err) {
         // Fallback if the API call throws for any reason
-        toggleFullscreen();
+        doToggle();
     }
 });
 
 // Allow closing fullscreen with the Escape key
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-        document.querySelectorAll('.img-container.fullscreen').forEach(c => c.classList.remove('fullscreen'));
+        document.querySelectorAll('.img-container.fullscreen').forEach(c => closeFullscreen(c));
     }
 });
 

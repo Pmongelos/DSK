@@ -201,22 +201,49 @@ h2 {
 }
 /* Style for when the image is "active" or "fullscreen" */
 .img-container.fullscreen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 1000;
-  background: rgba(0,0,0,0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    position: fixed;
+    top: 25%;
+    left: 25%;
+    width: 50vw;
+    height: max-content;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .img-container.fullscreen img {
   width: auto;
   height: 90vh;
   object-fit: contain;
+}
+
+/* Close button inside fullscreen image container */
+.img-close-btn {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    border: none;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    font-size: 28px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1010;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+}
+.img-close-btn:focus {
+    outline: 3px solid rgba(79,70,229,0.6);
+    outline-offset: 2px;
 }
 
 /* Found vs Locked States */
