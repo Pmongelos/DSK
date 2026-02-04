@@ -161,6 +161,15 @@ const symbols = [
     lat: -45.77928833245715,
     lng: 167.9402280465084,
     nearby: "Lower Wairaki Hut"
+  },
+  {
+    id: "ta019",
+    name: "Porowhita",
+    img: "porowhita.jpg",
+    description: "The porowhita, or circle, is a powerful symbol in Māori design, representing the never-ending cycle of life and nature. With its closed circle and central hole, the porowhita embodies continual renewal and interconnectedness, reflecting the belief that life is in constant motion, with no beginning or end.",
+    lat: -44.610717,
+    lng: 169.278968,
+    nearby: "Lake Hawea"
   }
 ];
 
@@ -457,22 +466,21 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
 //Funciones de UI
 //Enlarge image on click
-document.addEventListener('DOMContentLoaded', function () {
-    const container = document.querySelector('.img-container');
 
-    if (container) {    
-        container.onclick = () => {
-        if (!document.startViewTransition) {
-            container.classList.toggle('fullscreen');
-            return;
-        }
+const container = document.querySelector('.img-container');
 
-        document.startViewTransition(() => {
-            container.classList.toggle('fullscreen');
-        });
-        };
+if (container) {    
+    container.onclick = () => {
+    if (!document.startViewTransition) {
+        container.classList.toggle('fullscreen');
+        return;
     }
-});
+
+    document.startViewTransition(() => {
+        container.classList.toggle('fullscreen');
+    });
+    };
+}
 
 //Switch selector management
 document.addEventListener('DOMContentLoaded', function () {
