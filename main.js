@@ -202,6 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
 // 3. Funciones de la Aplicación
 function saveSymbol(symbolId) {
     const transaction = db.transaction(["foundSymbols"], "readwrite");
@@ -455,6 +456,19 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 //Funciones de UI
+//Enlarge image on click
+const container = document.querySelector('.img-container');
+
+container.onclick = () => {
+  if (!document.startViewTransition) {
+    container.classList.toggle('fullscreen');
+    return;
+  }
+
+  document.startViewTransition(() => {
+    container.classList.toggle('fullscreen');
+  });
+};
 
 //Switch selector management
 document.addEventListener('DOMContentLoaded', function () {

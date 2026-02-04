@@ -194,6 +194,29 @@ h2 {
     flex-shrink: 0;
     border: 1px solid var(--border);
     background-color: #fff;
+    margin-left: auto;
+    margin-right: auto;
+    width: 200px;
+    height: 200px;
+}
+/* Style for when the image is "active" or "fullscreen" */
+.img-container.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.img-container.fullscreen img {
+  width: auto;
+  height: 90vh;
+  object-fit: contain;
 }
 
 /* Found vs Locked States */
