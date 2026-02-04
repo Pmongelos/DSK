@@ -23,7 +23,7 @@ const symbols = [
     name: "Rūaumoko",
     img: "ruaumoko.jpg",
     description: "Rūaumoko is the god of earthquakes, volcanoes and seasons. He is the youngest son of Ranginui the Sky Father and Papatūānuku the Earth Mother. Although thought to be a kind god, Rūaumoko (like earthquakes and volcanoes) also represents danger and destruction.",
-    lat: -44.941065, 168.832921,
+    lat: -44.941065,
     lng: 168.832921,
     nearby: "Arrowtown"
   },
@@ -59,8 +59,8 @@ const symbols = [
     name: "Koru Aihe",
     img: "koruaihe.jpg",
     description: "The Koru Aihe inspired by dolphins symbolizes playfulness, harmony and friendship. Māori revered dolphins, as they did whales, believing them to be water spirits. Legendary tales tell of sailors being guided through treacherous waterways by gods who had taken the form of dolphins.",
-    lat: -45.028508,
-    lng: 168.657479,
+    lat: -45.030779,
+    lng: 168.660550,
     nearby: "Queenstown center"
   },
   {
