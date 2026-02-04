@@ -457,18 +457,22 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
 //Funciones de UI
 //Enlarge image on click
-const container = document.querySelector('.img-container');
+document.addEventListener('DOMContentLoaded', function () {
+    const container = document.querySelector('.img-container');
 
-container.onclick = () => {
-  if (!document.startViewTransition) {
-    container.classList.toggle('fullscreen');
-    return;
-  }
+    if (container) {    
+        container.onclick = () => {
+        if (!document.startViewTransition) {
+            container.classList.toggle('fullscreen');
+            return;
+        }
 
-  document.startViewTransition(() => {
-    container.classList.toggle('fullscreen');
-  });
-};
+        document.startViewTransition(() => {
+            container.classList.toggle('fullscreen');
+        });
+        };
+    }
+});
 
 //Switch selector management
 document.addEventListener('DOMContentLoaded', function () {
