@@ -465,22 +465,41 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 //Funciones de UI
-//Enlarge image on click
+// Enlarge image on click — use event delegation so dynamically created .img-container elements work
+document.addEventListener('click', (e) => {
+    const container = e.target.closest('.img-container');
+    if (!container) return;
 
-const container = document.querySelector('.img-container');
-
-if (container) {    
-    container.onclick = () => {
-    if (!document.startViewTransition) {
+    const toggleFullscreen = () => {
+        // Ensure only one container is fullscreen at a time
+        document.querySelectorAll('.img-container.fullscreen').forEach(el => {
+            if (el !== container) el.classList.remove('fullscreen');
+        });
         container.classList.toggle('fullscreen');
+    };
+
+    // Use View Transitions API when available for a smoother effect
+    if (!('startViewTransition' in document) || typeof document.startViewTransition !== 'function') {
+        toggleFullscreen();
         return;
     }
 
-    document.startViewTransition(() => {
-        container.classList.toggle('fullscreen');
-    });
-    };
-}
+    try {
+        document.startViewTransition(() => {
+            toggleFullscreen();
+        });
+    } catch (err) {
+        // Fallback if the API call throws for any reason
+        toggleFullscreen();
+    }
+});
+
+// Allow closing fullscreen with the Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.img-container.fullscreen').forEach(c => c.classList.remove('fullscreen'));
+    }
+});
 
 //Switch selector management
 document.addEventListener('DOMContentLoaded', function () {
