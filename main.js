@@ -167,9 +167,9 @@ const symbols = [
     name: "Porowhita",
     img: "porowhita.jpg",
     description: "The porowhita, or circle, is a powerful symbol in Māori design, representing the never-ending cycle of life and nature. With its closed circle and central hole, the porowhita embodies continual renewal and interconnectedness, reflecting the belief that life is in constant motion, with no beginning or end.",
-    lat: -44.610717,
-    lng: 169.278968,
-    nearby: "Lake Hawea"
+    lat: -44.706450, 
+    lng: 169.136505,
+    nearby: "Wanaka"
   },
   {
     id: "ta020",
@@ -457,7 +457,11 @@ function checkPosition(coords) {
             }
             
             // Track closest for status message
-            if (distance < closestDistance) closestDistance = distance;
+            if (distance < closestDistance) { 
+                closestDistance = distance;
+                closestHut = symbol.nearby;
+
+            }
         });
 
         // Update Status Box message
@@ -482,7 +486,7 @@ function checkPosition(coords) {
                 ? (closestDistance/1000).toFixed(1) + "km" 
                 : Math.round(closestDistance) + "m";
 
-            statusEl.innerHTML = `Scanning complete. <br/> Closest symbol is ${distStr} away. <br/> Keep going!<br/> 🏃‍♀️🏃‍♀️🏃‍♀️ <br/> (Check Collection tab for hints!)`;
+            statusEl.innerHTML = `Scanning complete. <br/> Closest symbol is ${distStr} away, near by:<span style="color: #ffbb00ff;"> ${closestHut}</span><br/> Keep going!<br/> 🏃‍♀️🏃‍♀️🏃‍♀️ <br/> (Check Collection tab for hints!)`;
             //statusEl.style.backgroundColor = "#fff3cd"; // Yellow warning color
         }
         
