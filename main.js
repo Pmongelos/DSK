@@ -23,9 +23,9 @@ const symbols = [
     name: "Rūaumoko",
     img: "ruaumoko.jpg",
     description: "Rūaumoko is the god of earthquakes, volcanoes and seasons. He is the youngest son of Ranginui the Sky Father and Papatūānuku the Earth Mother. Although thought to be a kind god, Rūaumoko (like earthquakes and volcanoes) also represents danger and destruction.",
-    lat: -44.739759610597034,
-    lng : 168.9846743320527,
-    nearby: "Fern Burn Hut"
+    lat: -44.941065, 168.832921,
+    lng: 168.832921,
+    nearby: "Arrowtown"
   },
   {
     id: "ta004",
@@ -59,9 +59,9 @@ const symbols = [
     name: "Koru Aihe",
     img: "koruaihe.jpg",
     description: "The Koru Aihe inspired by dolphins symbolizes playfulness, harmony and friendship. Māori revered dolphins, as they did whales, believing them to be water spirits. Legendary tales tell of sailors being guided through treacherous waterways by gods who had taken the form of dolphins.",
-    lat: -45.06744151556864,
-    lng: 168.5465170577338,
-    nearby: "Twelve Mile Delta Campsite"
+    lat: -45.028508,
+    lng: 168.657479,
+    nearby: "Queenstown center"
   },
   {
     id: "ta008",
@@ -77,9 +77,9 @@ const symbols = [
     name: "Wera",
     img: "wera.jpg",
     description: "The Wera symbol represents the tail of a whale. Whales were tapu (sacred) to the Māori. They were thought to be descended from the god of the ocean and were therefore supernatural in nature. The Wera symbolizes the ocean and a guardian spirit, especially for those at sea.",
-    lat: -44.98089614026388,
-    lng: 168.2625391134736,
-    nearby: "Greenstone Hut"
+    lat: -45.355114, 
+    lng: 168.090699,
+    nearby: "Kiwi Burn Hut"
   },
   {
     id: "ta010",
@@ -95,9 +95,9 @@ const symbols = [
     name: "pekapeka",
     img: "pekapekamaori.jpg",
     description: "Pekapeka is the Māori word for bat. Bats are the only land mammal native to New Zealand. The Māori would hunt by kindling a fire in the hollow of a tree, catching the bats in the air as they tried to escape",
-    lat: -44.979319844821106,
-    lng: 168.26273263300192,
-    nearby: "Greenstone Campsite"
+    lat: -45.270603, 
+    lng: 168.173383,
+    nearby: "Mavora Lakes Campsite"
   },
   {
     id: "ta012",
@@ -122,9 +122,9 @@ const symbols = [
     name: "Manaia",
     img: "manaia.jpg",
     description: "The Manaia symbol represents a mythological spiritual guardian, or messenger. It is traditionally depicted with the head of a bird, body of a man and the tail of a fish. The Manaia guards against evil and guides the spirit.",
-    lat: -46.29158318316038,
-    lng: 167.85187763332297,
-    nearby: "Turnbull's (Big Dam) Hut"
+    lat: -46.101719,
+    lng: 167.838900,
+    nearby: "Longwood Forest entrance"
   },
   {
     id: "ta015",
@@ -167,8 +167,8 @@ const symbols = [
     name: "Porowhita",
     img: "porowhita.jpg",
     description: "The porowhita, or circle, is a powerful symbol in Māori design, representing the never-ending cycle of life and nature. With its closed circle and central hole, the porowhita embodies continual renewal and interconnectedness, reflecting the belief that life is in constant motion, with no beginning or end.",
-    lat: -44.706450, 
-    lng: 169.136505,
+    lat: -44.697904,
+    lng: 169.125696,
     nearby: "Wanaka"
   },
   {
