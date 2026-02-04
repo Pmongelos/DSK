@@ -395,11 +395,13 @@ function checkPosition(coords) {
                 <div style="flex: 1;">
                     <h3>🎉🎉 Kia Ora! 🎉🎉 <br/> You caught ${foundCount} symbol(s)!</h3>    
                     <h3>${symbols.find(s => s.id === foundId).name}</h3>
+                </div>
+                <div class="img-container found">
+                    <img src="./img/${symbols.find(s => s.id === foundId).img}" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div style="flex: 1;">
                     <p>${symbols.find(s => s.id === foundId).description}</p>
                     <small style="color: #555;">Discovered: ${date}</small>
-                </div>
-                <div class="img-container">
-                    <img src="./img/${symbols.find(s => s.id === foundId).img}" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
             `;
         } else {

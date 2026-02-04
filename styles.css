@@ -188,6 +188,13 @@ h2 {
     border: 1px solid var(--border);
     background-color: #000;
 }
+.img-container.found{
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    background-color: #fff;
+}
 
 /* Found vs Locked States */
 .symbol-card.found {
