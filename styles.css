@@ -1,7 +1,7 @@
 :root {
     /* Color Palette */
-    --primary: rgb(79, 70, 229);      /* Indigo-600 */
-    --primary-hover: rgb(67, 56, 202);
+    --primary: rgb(229, 160, 70);      /* Indigo-600 */
+    --primary-hover: rgb(202, 180, 56);
     --bg-main: #111827;               /* Gray-900 (Deep Dark) */
     --bg-card: #1f2937;               /* Gray-800 (Card Background) */
     --border: rgb(55, 65, 81);        /* Gray-700 */
@@ -110,7 +110,7 @@ h2 {
 .tab.active {
     background-color: var(--primary);
     color: white;
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+    box-shadow: 0 4px 12px rgba(229, 155, 70, 0.4);
 }
 
 /* --- Primary Actions (Buttons) --- */
@@ -126,7 +126,7 @@ h2 {
     cursor: pointer;
     width: 100%;
     margin-top: 20px;
-    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+    box-shadow: 0 4px 15px rgba(229, 155, 70, 0.3);
     transition: transform 0.2s, background-color 0.2s;
     text-transform: uppercase;
 }
@@ -244,7 +244,7 @@ h2 {
     box-shadow: 0 6px 18px rgba(0,0,0,0.6);
 }
 .img-close-btn:focus {
-    outline: 3px solid rgba(79,70,229,0.6);
+    outline: 3px solid rgba(229, 165, 70, 0.6);
     outline-offset: 2px;
 }
 
