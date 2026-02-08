@@ -6,8 +6,8 @@ const ASSETS_TO_CACHE = [
   '/DSK/main.js',
   '/DSK/worker.js',
   '/DSK/manifest.json',
-  '/DSK/icons/icon-192.png',
-  '/DSK/icons/icon-512.png'
+  '/DSK/kiwi192X192.png',
+  '/DSK/kiwi512X512.png'
 ];
 
 self.addEventListener('install', (event) => {
