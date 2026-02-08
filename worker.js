@@ -1,48 +1,39 @@
-const CACHE_NAME = 'TMKG-v1';
-const ASSETS = [
-    '/DSK/',
-    '/DSK/index.html',
-    '/DSK/styles.css',
-    '/DSK/main.js',
-    '/DSK/manifest.json',
-    '/DSK/kiwi192X192.png',
-    '/DSK/kiwi512X512.png',
-    '/DSK/offline.html'
+const CACHE_NAME = 'to-moko-v1';
+const ASSETS_TO_CACHE = [
+  '/DSK/',
+  '/DSK/index.html',
+  '/DSK/styles.css',
+  '/DSK/main.js',
+  '/DSK/worker.js',
+  '/DSK/manifest.json',
+  '/DSK/icons/icon-192.png',
+  '/DSK/icons/icon-512.png'
 ];
 
-// Instalación: Guardar archivos estáticos
-self.addEventListener('install', (e) => {
-    e.waitUntil(
-        caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
-    );
-});
-
-// Activación: limpiar caches antiguas si las hubiera
-self.addEventListener('activate', (e) => {
-    e.waitUntil(
-        caches.keys().then(keys => {
-            return Promise.all(
-                keys.filter(key => key !== CACHE_NAME)
-                    .map(key => caches.delete(key))
-            );
+self.addEventListener('install', (event) => {
+  console.log('SW: Install Event started');
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      console.log('SW: Cache opened, adding assets...');
+      // We use map to catch WHICH specific file fails
+      return Promise.all(
+        ASSETS_TO_CACHE.map(url => {
+          return cache.add(url).catch(err => console.error(`SW: Failed to cache ${url}`, err));
         })
-    );
-});
-
-// Estrategia: Cache First (Servir desde caché si existe)
-
-// Estrategia: Cache then Network (stale-while-revalidate)
-self.addEventListener('fetch', (event) => {
-    // Solo interesan las peticiones GET (evita reintentos de POST/PUT/DELETE)
-    if (event.request.method !== 'GET') {
-        return;
-    }
-
-    event.respondWith(
-    caches.match(event.request).then((response) => {
-      // Return the cached file, or try the network
-      return response || fetch(event.request);
+      );
     })
   );
 });
 
+self.addEventListener('activate', (event) => {
+  console.log('SW: Activate Event');
+  event.waitUntil(clients.claim());
+});
+
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
+    })
+  );
+});

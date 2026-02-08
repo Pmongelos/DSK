@@ -1,6 +1,6 @@
 :root {
     /* Color Palette */
-    --primary: rgb(229, 160, 70);      /* Indigo-600 */
+    --primary: #e5a046;      /* Indigo-600 */
     --primary-hover: rgb(202, 180, 56);
     --bg-main: #111827;               /* Gray-900 (Deep Dark) */
     --bg-card: #1f2937;               /* Gray-800 (Card Background) */
