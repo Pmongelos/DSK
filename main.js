@@ -212,11 +212,29 @@ if ('serviceWorker' in navigator) {
 
 // 2. Configuración de la Base de Datos (IndexedDB)
 let db;
-const request = indexedDB.open("TMKG_V1", 1);
+const dbName = "MaoriGameDB";
+const dbVersion = 3; // Incrementamos la versión
 
-request.onupgradeneeded = (e) => {
-    db = e.target.result;
-    db.createObjectStore("foundSymbols", { keyPath: "id" });
+const request = indexedDB.open(dbName, dbVersion);
+
+request.onupgradeneeded = (event) => {
+    db = event.target.result;
+    // Tabla para progreso del juego
+    if (!db.objectStoreNames.contains("foundSymbols")) {
+        db.createObjectStore("foundSymbols", { keyPath: "id" });
+    }
+    // NUEVA TABLA para archivos (CSS e Imágenes)
+    if (!db.objectStoreNames.contains("assets")) {
+        db.createObjectStore("assets", { keyPath: "name" });
+    }
+};
+
+request.onsuccess = (event) => {
+    db = event.target.result;
+    console.log("DB abierta con éxito");
+    // Al abrir, intentamos guardar archivos (si hay red) 
+    // y aplicamos los que ya tengamos (por si estamos offline)
+    initAssets();
 };
 
 request.onsuccess = (e) => {
@@ -318,27 +336,44 @@ function renderSymbolList() {
     const container = document.getElementById('symbols-container');
     container.innerHTML = ''; 
     
+    // 1. Abrimos una transacción para ver qué hemos descubierto ya
+    const transaction = db.transaction(["foundSymbols", "assets"], "readonly");
+    const foundStore = transaction.objectStore("foundSymbols");
+    const assetStore = transaction.objectStore("assets");
+
     symbols.forEach(symbol => {
         const card = document.createElement('div');
-        // We use 'locked' instead of 'hidden' so it is visible but grayed out
-        card.className = 'symbol-card locked'; 
+        card.className = 'symbol-card locked'; // Por defecto todos bloqueados
         card.dataset.id = symbol.id;
         
+        // Estado inicial (Bloqueado)
         card.innerHTML = `
             <div style="flex: 1;">
                 <h3>???</h3>
                 <p>Status: <strong>Undiscovered</strong></p>
                 <p class="distance-hint">Signal: Unknown</p>
             </div>
-            <div class="img-container" style="display: flex; align-items: center; justify-content: center; background: #ccc;">
-                <img src="./img/${symbol.img}" alt="${symbol.name}" style="display: none">
+            <div class="img-container" style="display: flex; align-items: center; justify-content: center; background: var(--bg-main);">
                 <span style="font-size: 24px;">🔒</span>
             </div>
         `;
+
+        // 2. Comprobamos si este símbolo ya fue encontrado en sesiones anteriores
+        const checkFound = foundStore.get(symbol.id);
+        
+        checkFound.onsuccess = () => {
+            if (checkFound.result) {
+                // Si existe en foundSymbols, actualizamos la tarjeta a estado "Encontrado"
+                const discoveryDate = checkFound.result.date;
+                
+                // Usamos la función que ya tenemos para inyectar la imagen desde la DB
+                updateSymbolCardToFound(card, symbol, discoveryDate);
+            }
+        };
+
         container.appendChild(card);
     });
 }
-
 //Funciones de escaneo y posición
 function startScan() {
     const statusEl = document.getElementById('status');
@@ -504,20 +539,60 @@ function checkPosition(coords) {
 }
 
 // Helper to handle the UI switch from Locked -> Found
+// Helper actualizado para manejar el cambio de Bloqueado -> Encontrado usando IndexedDB
 function updateSymbolCardToFound(card, symbol, date) {
     card.classList.remove('locked');
     card.classList.add('found');
-    card.innerHTML = `
-        <div style="flex: 1;">
-            <h3>${symbol.name}</h3>
-            <p>${symbol.description}</p>
-            <small style="color: #555;">Discovered: ${date}</small>
-            <small style="color: #555;">Near by: ${symbol.nearby}</small><br/>
-        </div>
-        <div class="img-container">
-            <img src="./img/${symbol.img}" style="width: 100%; height: 100%; object-fit: cover;">
-        </div>
+    
+    // 1. Limpiamos el contenido previo y preparamos la estructura básica
+    card.innerHTML = ''; 
+
+    // 2. Creamos el contenedor de texto (lado izquierdo)
+    const infoDiv = document.createElement('div');
+    infoDiv.style.flex = "1";
+    infoDiv.innerHTML = `
+        <h3>${symbol.name}</h3>
+        <p>${symbol.description}</p>
+        <small style="display: block; color: var(--text-muted); margin-top: 5px;">Discovered: ${date}</small>
+        <small style="display: block; color: var(--text-muted);">Near by: ${symbol.nearby || 'Unknown'}</small>
     `;
+
+    // 3. Creamos el contenedor de imagen (lado derecho)
+    const imgDiv = document.createElement('div');
+    imgDiv.className = 'img-container';
+    
+    const imgElement = document.createElement('img');
+    imgElement.style.cssText = "width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s;";
+    imgElement.alt = symbol.name;
+
+    // 4. LÓGICA DE INDEXED DB: Buscamos el archivo binario
+    if (db) {
+        const transaction = db.transaction(["assets"], "readonly");
+        const request = transaction.objectStore("assets").get(symbol.img);
+
+        request.onsuccess = () => {
+            if (request.result && request.result.data) {
+                // Creamos una URL "virtual" para el archivo binario (Blob)
+                const blobUrl = URL.createObjectURL(request.result.data);
+                imgElement.src = blobUrl;
+                imgElement.style.opacity = "1"; // Aparece suavemente al cargar
+            } else {
+                // Si no está en DB, intentamos carga normal como plan B
+                imgElement.src = `./img/${symbol.img}`;
+                imgElement.style.opacity = "1";
+            }
+        };
+
+        request.onerror = () => {
+            imgElement.src = `./img/${symbol.img}`;
+            imgElement.style.opacity = "1";
+        };
+    }
+
+    // 5. Ensamblamos todo en la tarjeta
+    imgDiv.appendChild(imgElement);
+    card.appendChild(infoDiv);
+    card.appendChild(imgDiv);
 }
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -708,4 +783,76 @@ function hideSpinner() {
         if (modes) modes.style.display = '';
         if (status) status.style.display = '';
     }, remaining);
+}
+
+
+//Funciones de DB
+async function initAssets() {
+    // Cachear el CSS
+    await cacheAsset('styles.css', './styles.css');
+    applyCachedStyles();
+
+    // Cachear imágenes de los símbolos
+    symbols.forEach(s => {
+        if (s.img && s.img !== "") {
+            // Pasamos el nombre del archivo y la ruta completa
+            cacheAsset(s.img, `./img/${s.img}`);
+        }
+    });
+}
+
+async function cacheAsset(name, url) {
+    if (!db) return;
+
+    // 1. Verificación previa: ¿Ya tenemos este archivo en IndexedDB?
+    const alreadyCached = await new Promise((resolve) => {
+        const transaction = db.transaction(["assets"], "readonly");
+        const request = transaction.objectStore("assets").get(name);
+        request.onsuccess = () => resolve(!!request.result);
+        request.onerror = () => resolve(false);
+    });
+
+    if (alreadyCached) {
+        console.log(`ASSET: ${name} ya está en cache.`);
+        return; 
+    }
+
+    // 2. Si no lo tenemos, intentamos descargarlo
+    try {
+        console.log(`ASSET: Descargando ${name} desde ${url}...`);
+        const response = await fetch(url);
+        
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
+        const blob = await response.blob();
+
+        // 3. Guardar el archivo binario en IndexedDB
+        const transaction = db.transaction(["assets"], "readwrite");
+        const store = transaction.objectStore("assets");
+        
+        // Guardamos un objeto con el nombre (llave) y el blob (datos)
+        const putRequest = store.put({ name: name, data: blob });
+
+        putRequest.onsuccess = () => {
+            console.log(`ASSET: ${name} guardado con éxito para uso offline.`);
+        };
+    } catch (e) {
+        console.warn(`ASSET: No se pudo cachear ${name}. Probablemente estés offline o la ruta sea incorrecta.`, e);
+    }
+}
+
+function applyCachedStyles() {
+    const transaction = db.transaction(["assets"], "readonly");
+    const request = transaction.objectStore("assets").get("styles.css");
+
+    request.onsuccess = () => {
+        if (request.result) {
+            const blob = request.result.data;
+            const styleUrl = URL.createObjectURL(blob);
+            const link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = styleUrl;
+            document.head.appendChild(link);
+        }
+    };
 }
