@@ -213,33 +213,35 @@ if ('serviceWorker' in navigator) {
 // 2. Configuración de la Base de Datos (IndexedDB)
 let db;
 const dbName = "MaoriGameDB";
-const dbVersion = 4; // Incrementamos la versión
+const dbVersion = 5; 
 
+// 1. Definimos la apertura
 const request = indexedDB.open(dbName, dbVersion);
 
-request.onblocked = function() {
-    // Si la consola muestra esto, es que hay otra pestaña abierta bloqueando la DB
-    alert("Por favor, cierra otras pestañas de esta app para actualizar.");
-};
-
+// 2. Manejo de actualización (solo corre si subes la versión)
 request.onupgradeneeded = (event) => {
-    db = event.target.result;
-    // Tabla para progreso del juego
-    if (!db.objectStoreNames.contains("foundSymbols")) {
-        db.createObjectStore("foundSymbols", { keyPath: "id" });
+    console.log("DB: Upgrading...");
+    const database = event.target.result;
+    if (!database.objectStoreNames.contains("foundSymbols")) {
+        database.createObjectStore("foundSymbols", { keyPath: "id" });
     }
-    // NUEVA TABLA para archivos (CSS e Imágenes)
-    if (!db.objectStoreNames.contains("assets")) {
-        db.createObjectStore("assets", { keyPath: "name" });
+    if (!database.objectStoreNames.contains("assets")) {
+        database.createObjectStore("assets", { keyPath: "name" });
     }
 };
 
+// 3. Éxito: Aquí es donde arranca la app realmente
 request.onsuccess = (event) => {
     db = event.target.result;
-    console.log("DB abierta con éxito");
-    // Al abrir, intentamos guardar archivos (si hay red) 
-    // y aplicamos los que ya tengamos (por si estamos offline)
-    initAssets();
+    console.log("DB: Abierta con éxito.");
+    
+    // IMPORTANTE: Solo llamamos a estas funciones cuando sabemos que 'db' existe
+    initAssets(); 
+    renderSymbolList();
+};
+
+request.onerror = (event) => {
+    console.error("DB: Error fatal al abrir IndexedDB", event.target.error);
 };
 
 request.onsuccess = (e) => {
