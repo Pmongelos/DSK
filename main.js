@@ -218,6 +218,18 @@ const dbVersion = 5;
 // 1. Definimos la apertura
 const request = indexedDB.open(dbName, dbVersion);
 
+request.onupgradeneeded = (event) => {
+    console.log("DB: Upgrading...");
+    // ... tu lógica de creación de tablas ...
+};
+
+// ESTO ES LO QUE TE FALTA:
+request.onblocked = () => {
+    console.warn("DB: Actualización bloqueada. Por favor, cierra otras pestañas.");
+    alert("Hay una actualización pendiente. Por favor, cierra las demás pestañas de esta app.");
+};
+
+
 // 2. Manejo de actualización (solo corre si subes la versión)
 request.onupgradeneeded = (event) => {
     console.log("DB: Upgrading...");
@@ -230,23 +242,18 @@ request.onupgradeneeded = (event) => {
     }
 };
 
-// 3. Éxito: Aquí es donde arranca la app realmente
 request.onsuccess = (event) => {
     db = event.target.result;
     console.log("DB: Abierta con éxito.");
-    
-    // IMPORTANTE: Solo llamamos a estas funciones cuando sabemos que 'db' existe
+
+    // Si la base de datos se actualiza en otra pestaña, cerramos esta
+    db.onversionchange = () => {
+        db.close();
+        console.log("DB: Versión antigua cerrada. Recargando...");
+        location.reload();
+    };
+
     initAssets(); 
-    renderSymbolList();
-};
-
-request.onerror = (event) => {
-    console.error("DB: Error fatal al abrir IndexedDB", event.target.error);
-};
-
-request.onsuccess = (e) => {
-    db = e.target.result;
-    // Initialize UI
     renderSymbolList();
     updateSymbolUI();
 
@@ -268,6 +275,11 @@ request.onsuccess = (e) => {
         console.warn('Error counting foundSymbols on DB open', err);
     }
 };
+
+request.onerror = (event) => {
+    console.error("DB: Error fatal al abrir IndexedDB", event.target.error);
+};
+
 
 // Initialize app
 document.addEventListener('DOMContentLoaded', () => {
