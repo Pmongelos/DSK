@@ -1,9 +1,31 @@
 const CACHE_NAME = 'TMKG-v1';
 const ASSETS = [
-    './',
-    './index.html',
-    './main.js',
-    './offline.html'
+    '/DSK/',
+    '/DSK/index.html',
+    '/DSK/styles.css',
+    '/DSK/main.js',
+    '/DSK/manifest.json',
+    '/DSK/img/bluff.jpeg',
+    '/DSK/img/manaia.jpg',
+    '/DSK/img/rongo.jpg',
+    '/DSK/img/heimatau.jpg',
+    '/DSK/img/mangopare.jpg',
+    '/DSK/img/ruaumoko.jpg',
+    '/DSK/img/heitaiaha.jpg',
+    '/DSK/img/moana.jpg',
+    '/DSK/img/tane.jpg',
+    '/DSK/img/heitiki.jpg',
+    '/DSK/img/pekapekamaori.jpg',
+    '/DSK/img/tokiadze.jpg',
+    '/DSK/img/koruaihe.jpg',
+    '/DSK/img/pikorua1.jpg',
+    '/DSK/img/tumatauenga.jpg',
+    '/DSK/img/koruhonu.jpg',
+    '/DSK/img/pikorua.jpg',
+    '/DSK/img/urutengangana.jpg',
+    '/DSK/img/koru.jpg',
+    '/DSK/img/porowhita.jpg',
+    '/DSK/img/wera.jpg'
 ];
 
 // Instalación: Guardar archivos estáticos

@@ -202,8 +202,12 @@ function updateCollectionButton() {
 
 // 1. Registro del Service Worker
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('worker.js')
-        .then(() => console.log("Service Worker registrado"));
+  window.addEventListener('load', () => {
+    // Note the leading slash and the scope object
+    navigator.serviceWorker.register('/DSK/worker.js', { scope: '/DSK/' })
+      .then(reg => console.log('Service Worker registered', reg))
+      .catch(err => console.error('Service Worker failed', err));
+  });
 }
 
 // 2. Configuración de la Base de Datos (IndexedDB)
