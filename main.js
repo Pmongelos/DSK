@@ -217,6 +217,11 @@ const dbVersion = 4; // Incrementamos la versión
 
 const request = indexedDB.open(dbName, dbVersion);
 
+request.onblocked = function() {
+    // Si la consola muestra esto, es que hay otra pestaña abierta bloqueando la DB
+    alert("Por favor, cierra otras pestañas de esta app para actualizar.");
+};
+
 request.onupgradeneeded = (event) => {
     db = event.target.result;
     // Tabla para progreso del juego
@@ -848,11 +853,20 @@ function applyCachedStyles() {
     request.onsuccess = () => {
         if (request.result) {
             const blob = request.result.data;
-            const styleUrl = URL.createObjectURL(blob);
-            const link = document.createElement("link");
-            link.rel = "stylesheet";
-            link.href = styleUrl;
-            document.head.appendChild(link);
+            // IMPORTANTE: Aseguramos el tipo MIME para que Chrome lo acepte
+            const cssBlob = new Blob([blob], { type: 'text/css' });
+            const styleUrl = URL.createObjectURL(cssBlob);
+            
+            // Buscamos la etiqueta existente o creamos una nueva
+            let link = document.getElementById('main-styles');
+            if (!link) {
+                link = document.createElement("link");
+                link.rel = "stylesheet";
+                link.id = "main-styles";
+                document.head.appendChild(link);
+            }
+            link.href = styleUrl; 
+            console.log("Estilos aplicados desde IndexedDB");
         }
     };
 }
