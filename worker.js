@@ -5,6 +5,8 @@ const ASSETS = [
     '/DSK/styles.css',
     '/DSK/main.js',
     '/DSK/manifest.json',
+    '/DSK/kiwi192X192.png',
+    '/DSK/kiwi512X512.png',
     '/DSK/offline.html'
 ];
 
