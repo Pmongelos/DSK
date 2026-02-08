@@ -4,18 +4,21 @@
   "start_url": "/DSK/index.html",
   "scope": "/DSK/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#6200ee",
+  "orientation": "portrait",
+  "background_color": "#111827",
+  "theme_color": "#4f46e5",
   "icons": [
     {
-      "src": "kiwi192X192.png",
+      "src": "/DSK/kiwi192X192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "kiwi512X512.png",
+      "src": "/DSK/kiwi512X512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
