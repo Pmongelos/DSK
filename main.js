@@ -793,56 +793,47 @@ function hideSpinner() {
 
 //Funciones de DB
 async function initAssets() {
-    // Cachear el CSS
-    await cacheAsset('styles.css', './styles.css');
+    console.log("Iniciando guardado de archivos en IndexedDB...");
+    
+    // IMPORTANTE: En GitHub Pages, usa la ruta absoluta desde la raíz para el fetch
+    const repoPath = '/DSK/'; 
+    
+    // 1. Intentar guardar el CSS
+    await cacheAsset('styles.css', repoPath + 'styles.css');
+    
+    // 2. Intentar aplicar lo que haya (aunque acabe de guardarse)
     applyCachedStyles();
 
-    // Cachear imágenes de los símbolos
+    // 3. Cachear imágenes de los símbolos
     symbols.forEach(s => {
-        if (s.img && s.img !== "") {
-            // Pasamos el nombre del archivo y la ruta completa
-            cacheAsset(s.img, `./img/${s.img}`);
+        if (s.img) {
+            cacheAsset(s.img, repoPath + 'img/' + s.img);
         }
     });
 }
-
 async function cacheAsset(name, url) {
     if (!db) return;
-
-    // 1. Verificación previa: ¿Ya tenemos este archivo en IndexedDB?
-    const alreadyCached = await new Promise((resolve) => {
-        const transaction = db.transaction(["assets"], "readonly");
-        const request = transaction.objectStore("assets").get(name);
-        request.onsuccess = () => resolve(!!request.result);
-        request.onerror = () => resolve(false);
-    });
-
-    if (alreadyCached) {
-        console.log(`ASSET: ${name} ya está en cache.`);
-        return; 
-    }
-
-    // 2. Si no lo tenemos, intentamos descargarlo
     try {
-        console.log(`ASSET: Descargando ${name} desde ${url}...`);
         const response = await fetch(url);
+        if (!response.ok) throw new Error(`Error HTTP: ${response.status} en ${url}`);
         
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        let blob = await response.blob();
         
-        const blob = await response.blob();
+        // Truco para Chrome: Forzar el tipo MIME si es CSS
+        if (name.endsWith('.css')) {
+            blob = new Blob([blob], { type: 'text/css' });
+        }
 
-        // 3. Guardar el archivo binario en IndexedDB
         const transaction = db.transaction(["assets"], "readwrite");
         const store = transaction.objectStore("assets");
         
-        // Guardamos un objeto con el nombre (llave) y el blob (datos)
-        const putRequest = store.put({ name: name, data: blob });
-
-        putRequest.onsuccess = () => {
-            console.log(`ASSET: ${name} guardado con éxito para uso offline.`);
-        };
+        const request = store.put({ name: name, data: blob });
+        
+        request.onsuccess = () => console.log(`✅ Guardado con éxito: ${name}`);
+        request.onerror = (e) => console.error(`❌ Error al guardar ${name}:`, e);
+        
     } catch (e) {
-        console.warn(`ASSET: No se pudo cachear ${name}. Probablemente estés offline o la ruta sea incorrecta.`, e);
+        console.error(`⚠️ No se pudo cachear ${name}:`, e);
     }
 }
 
