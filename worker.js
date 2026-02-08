@@ -4,7 +4,8 @@ const ASSETS = [
     '/DSK/index.html',
     '/DSK/styles.css',
     '/DSK/main.js',
-    '/DSK/manifest.json'
+    '/DSK/manifest.json',
+    '/DSK/offline.html'
 ];
 
 // Instalación: Guardar archivos estáticos
@@ -35,40 +36,11 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    event.respondWith((async () => {
-        // Intenta devolver respuesta en caché inmediatamente
-        const cachedResponse = await caches.match(event.request);
-
-        // Mientras tanto, intenta obtener una versión actualizada de la red
-        const networkResponsePromise = fetch(event.request)
-            .then((networkResponse) => {
-                // Si la respuesta es válida, la guardamos en caché para la próxima vez
-                if (networkResponse && networkResponse.status === 200) {
-                    const responseClone = networkResponse.clone();
-                    caches.open(CACHE_NAME).then(cache => {
-                        cache.put(event.request, responseClone).catch(() => { /* fallbacks silenciosos */ });
-                    });
-                }
-                return networkResponse;
-            })
-            .catch(() => {
-                // Si la red falla, devolvemos undefined aquí; el fallback se maneja abajo
-                return undefined;
-            });
-
-        // Si hay algo en caché, devuélvelo de inmediato y actualiza la caché en segundo plano.
-        if (cachedResponse) {
-            // Kick off the network update but don't await it here (stale-while-revalidate)
-            networkResponsePromise.catch(() => {});
-            return cachedResponse;
-        }
-
-        // Si no hay caché, espera la respuesta de la red.
-        const networkResponse = await networkResponsePromise;
-        if (networkResponse) return networkResponse;
-
-        // Si todo falla (sin caché y sin red), intenta devolver una página offline
-        return caches.match('./offline.html');
-    })());
+    event.respondWith(
+    caches.match(event.request).then((response) => {
+      // Return the cached file, or try the network
+      return response || fetch(event.request);
+    })
+  );
 });
 
