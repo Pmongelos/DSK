@@ -213,7 +213,7 @@ if ('serviceWorker' in navigator) {
 // 2. Configuración de la Base de Datos (IndexedDB)
 let db;
 const dbName = "MaoriGameDB";
-const dbVersion = 3; // Incrementamos la versión
+const dbVersion = 4; // Incrementamos la versión
 
 const request = indexedDB.open(dbName, dbVersion);
 
