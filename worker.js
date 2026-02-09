@@ -1,13 +1,13 @@
 const CACHE_NAME = 'TMKG-cache-v1';
 const ASSETS_TO_CACHE = [
-  '/DSK/',
-  '/DSK/index.html',
-  '/DSK/styles.css',
-  '/DSK/main.js',
-  '/DSK/worker.js',
-  '/DSK/manifest.json',
-  '/DSK/kiwi192X192.png',
-  '/DSK/kiwi512X512.png'
+  '/TMKG/',
+  '/TMKG/index.html',
+  '/TMKG/styles.css',
+  '/TMKG/main.js',
+  '/TMKG/worker.js',
+  '/TMKG/manifest.json',
+  '/TMKG/kiwi192X192.png',
+  '/TMKG/kiwi512X512.png'
 ];
 
 self.addEventListener('install', (event) => {

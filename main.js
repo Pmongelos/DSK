@@ -204,7 +204,7 @@ function updateCollectionButton() {
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     // Note the leading slash and the scope object
-    navigator.serviceWorker.register('/DSK/worker.js', { scope: '/DSK/' })
+    navigator.serviceWorker.register('/TMKG/worker.js', { scope: '/TMKG/' })
       .then(reg => console.log('Service Worker registered', reg))
       .catch(err => console.error('Service Worker failed', err));
   });
@@ -810,7 +810,7 @@ async function initAssets() {
     console.log("Iniciando guardado de archivos en IndexedDB...");
     
     // IMPORTANTE: En GitHub Pages, usa la ruta absoluta desde la raíz para el fetch
-    const repoPath = '/DSK/'; 
+    const repoPath = '/TMKG/'; 
     
     // 1. Intentar guardar el CSS
     await cacheAsset('styles.css', repoPath + 'styles.css');
